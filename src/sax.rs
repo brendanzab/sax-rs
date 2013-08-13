@@ -90,13 +90,11 @@ pub type ParseResult = Result<ParseMsg, error::ErrorData>;
 pub fn parse(src: &str) -> Port<ParseResult> {
     let (port, chan) = stream();
     unsafe {
-        do src.to_c_str().with_ref |c_str| {
-            ffi::xmlSAXUserParseMemory(&extfn::new_sax_handler(),
-                                       cast::transmute(&chan),
-                                       src.to_c_str().with_ref(|r|r),
-                                       src.len() as libc::c_int);
-            ffi::xmlCleanupParser();
-        }
+        ffi::xmlSAXUserParseMemory(&extfn::new_sax_handler(),
+                                   cast::transmute(&chan),
+                                   src.to_c_str().with_ref(|r|r),
+                                   src.len() as libc::c_int);
+        ffi::xmlCleanupParser();
     }
     let _ = chan;
     port
