@@ -25,9 +25,9 @@
 extern mod extra;
 
 use std::cast;
-use std::comm::{Chan, Port, stream};
+use std::comm::{Port, stream};
 use std::hashmap::HashMap;
-use std::libc;
+use std::libc::{c_char, c_int};
 use std::str;
 
 pub mod error;
@@ -67,7 +67,7 @@ pub struct Attributes(HashMap<~str, ~str>);
 impl Attributes {
     unsafe fn from_buf(atts: **ffi::xmlChar) -> Attributes {
         let mut map = Attributes(HashMap::new());
-        let mut ptr = atts as **libc::c_char;
+        let mut ptr = atts as **c_char;
         while !ptr.is_null() && !(*ptr).is_null() {
             map.insert(str::raw::from_c_str(*ptr),
                        str::raw::from_c_str(*(ptr + 1)));
@@ -93,7 +93,7 @@ pub fn parse(src: &str) -> Port<ParseResult> {
         ffi::xmlSAXUserParseMemory(&extfn::new_sax_handler(),
                                    cast::transmute(&chan),
                                    src.to_c_str().with_ref(|r|r),
-                                   src.len() as libc::c_int);
+                                   src.len() as c_int);
         ffi::xmlCleanupParser();
     }
     let _ = chan;
@@ -102,7 +102,6 @@ pub fn parse(src: &str) -> Port<ParseResult> {
 
 #[cfg(test)]
 mod tests {
-    use std::comm;
     use super::*;
 
     static TEST_XML: &'static str =

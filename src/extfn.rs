@@ -15,7 +15,6 @@
 
 use std::cast::transmute;
 use std::comm::Chan;
-use std::hashmap::HashMap;
 use std::libc::{c_char, c_int, c_void};
 use std::ptr::null;
 use std::str::raw::{from_c_str, from_buf_len};
