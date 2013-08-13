@@ -15,7 +15,6 @@
 
 #[link(name = "sax",
        vers = "0.1",
-       uuid = "6199FAD3-6D03-4E29-87E7-7DC1B1B65C2C",
        author = "Brendan Zabarauskas",
        url = "https://github.com/bjz/sax-rs")];
 
@@ -90,13 +89,14 @@ pub type ParseResult = Result<ParseMsg, error::ErrorData>;
 pub fn parse(src: &str) -> Port<ParseResult> {
     let (port, chan) = stream();
     unsafe {
-        ffi::xmlSAXUserParseMemory(&extfn::new_sax_handler(),
-                                   cast::transmute(&chan),
-                                   src.to_c_str().with_ref(|r|r),
-                                   src.len() as c_int);
-        ffi::xmlCleanupParser();
+        do src.to_c_str().with_ref |c_str| {
+            ffi::xmlSAXUserParseMemory(&extfn::new_sax_handler(),
+                                       cast::transmute(&chan),
+                                       c_str,
+                                       src.len() as c_int);
+            ffi::xmlCleanupParser();
+        }
     }
-    let _ = chan;
     port
 }
 

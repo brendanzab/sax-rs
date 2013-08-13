@@ -62,11 +62,19 @@ pub fn new_sax_handler() -> ffi::xmlSAXHandler {
 unsafe fn chan_from_ptr(ctx: *c_void) -> &Chan<ParseResult> { transmute(ctx) }
 
 extern "C" fn start_document(ctx: *c_void) {
-    unsafe { chan_from_ptr(ctx).send(Ok(StartDocument)); }
+    unsafe {
+        chan_from_ptr(ctx).send(
+            Ok(StartDocument)
+        );
+    }
 }
 
 extern "C" fn end_document(ctx: *c_void) {
-    unsafe { chan_from_ptr(ctx).send(Ok(EndDocument)); }
+    unsafe {
+        chan_from_ptr(ctx).send(
+            Ok(EndDocument)
+        );
+    }
 }
 
 extern "C" fn start_element(ctx: *c_void, name: *ffi::xmlChar, atts: **ffi::xmlChar) {
