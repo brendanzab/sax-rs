@@ -88,11 +88,11 @@ pub type ParseResult = Result<ParseMsg, error::ErrorData>;
 
 pub struct Parser {
     priv port: Port<ParseResult>,
-    priv is_last: bool,
 }
 
-impl Parser {
-    /// Recives a new parse result. Fails if the parser has finished.
+impl GenericPort<ParseResult> for Parser {
+    /// Recives a new parse result. Fails if the parser has finished. Failure
+    /// can be avoided by finishing after recieving the `Ok(EndDocument)` result.
     pub fn recv(&self) -> ParseResult {
         self.port.try_recv().expect(
             "Could not get a new parse result, the parser has already finished!"
@@ -101,19 +101,6 @@ impl Parser {
 
     pub fn try_recv(&self) -> Option<ParseResult> {
         self.port.try_recv()
-    }
-}
-
-impl Iterator<ParseResult> for Parser {
-    #[inline]
-    fn next(&mut self) -> Option<ParseResult> {
-        if self.is_last { return None };
-
-        let msg = self.try_recv();
-        if msg == Some(Ok(EndDocument)) {
-            self.is_last = true;
-        }
-        msg
     }
 }
 
@@ -128,7 +115,7 @@ pub fn parse(src: &str) -> Parser {
             ffi::xmlCleanupParser();
         }
     }
-    Parser { port: port, is_last: false }
+    Parser { port: port }
 }
 
 #[cfg(test)]
@@ -139,12 +126,11 @@ mod tests {
 
     #[test]
     fn test() {
-        for r in parse(TEST_XML) {
-            match r {
-                Ok(IgnorableWhitespace(_)) => (),
-                Ok(ref msg) => println(msg.to_str()),
-                Err(ref err) => println(err.to_str()),
-            }
+        let sax = parse(TEST_XML);
+        loop {
+            let msg = sax.recv().unwrap();
+            println(msg.to_str());
+            if msg == EndDocument { break }
         }
     }
 }
