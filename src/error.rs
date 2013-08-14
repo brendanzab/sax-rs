@@ -15,8 +15,6 @@
 
 //! Error handling
 
-use extra::term::{Terminal, color};
-use std::io::with_str_writer;
 use std::str::raw::from_c_str;
 
 use super::ffi;
@@ -39,23 +37,6 @@ impl ErrorLevel {
             ffi::XML_ERR_ERROR   => Some(Error),
             ffi::XML_ERR_FATAL   => Some(Fatal),
             _                    => None,
-        }
-    }
-
-    pub fn term_color(&self) -> u16 {
-        match *self {
-            Warning => color::YELLOW,
-            Error   => color::RED,
-            Fatal   => color::RED,
-        }
-    }
-
-    pub fn to_color_str(&self) -> ~str {
-        do with_str_writer |writer| {
-            let term = Terminal::new(writer);
-            term.map(|t| t.fg(self.term_color()));
-            writer.write_str(self.to_str());
-            term.map(|t| t.fg(color::BLACK));
         }
     }
 }
@@ -97,7 +78,7 @@ impl ToStr for ErrorData {
         fmt!("%?:%? %s: %s",
              self.line,
              self.column,
-             self.level.to_color_str(),
+             self.level.to_str(),
              self.message)
     }
 }

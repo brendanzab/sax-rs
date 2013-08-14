@@ -22,14 +22,15 @@ use std::str::raw::{from_c_str, from_buf_len};
 use super::*;
 use super::error::ErrorData;
 
-pub fn new_sax_handler() -> ffi::xmlSAXHandler {
+pub fn new_handler() -> ffi::xmlSAXHandler {
     ffi::xmlSAXHandler {
-        resolveEntity:          null(),
         internalSubset:         null(),
-        externalSubset:         null(),
+        isStandalone:           null(),
+        hasInternalSubset:      null(),
+        hasExternalSubset:      null(),
+        resolveEntity:          null(),
         getEntity:              null(),
         entityDecl:             null(),
-        getParameterEntity:     null(),
         notationDecl:           null(),
         attributeDecl:          null(),
         elementDecl:            null(),
@@ -40,22 +41,21 @@ pub fn new_sax_handler() -> ffi::xmlSAXHandler {
         startElement:           start_element,
         endElement:             end_element,
         reference:              null(),
-        characters:             null(),
+        characters:             characters,
         ignorableWhitespace:    ignorable_whitespace,
         processingInstruction:  null(),
         comment:                comment,
+        warning:                null(),     // use serror
+        error:                  null(),     // use serror
+        fatalError:             null(),     // use serror
+        getParameterEntity:     null(),
         cdataBlock:             cdata_block,
-        warning:                null(),         // use serror
-        error:                  null(),         // use serror
-        fatalError:             null(),         // use serror
-        isStandalone:           null(),
-        hasInternalSubset:      null(),
-        hasExternalSubset:      null(),
+        externalSubset:         null(),
         initialized:            ffi::XML_SAX2_MAGIC,
         _private:               null(),
         startElementNs:         null(),
         endElementNs:           null(),
-        serror:                 null(),
+        serror:                 serror,
     }
 }
 

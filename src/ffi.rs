@@ -54,11 +54,12 @@ pub type endElementNsSAX2Func           = *u8;  // typedef void (*endElementNsSA
 pub type xmlStructuredErrorFunc         = *u8;  // typedef void (*xmlStructuredErrorFunc) (void *userData, xmlErrorPtr error);
 
 pub struct xmlSAXHandler {
-    resolveEntity:          resolveEntitySAXFunc,
     internalSubset:         internalSubsetSAXFunc,
-    externalSubset:         externalSubsetSAXFunc,
+    isStandalone:           isStandaloneSAXFunc,
+    hasInternalSubset:      hasInternalSubsetSAXFunc,
+    hasExternalSubset:      hasExternalSubsetSAXFunc,
+    resolveEntity:          resolveEntitySAXFunc,
     getEntity:              getEntitySAXFunc,
-    getParameterEntity:     getParameterEntitySAXFunc,
     entityDecl:             entityDeclSAXFunc,
     notationDecl:           notationDeclSAXFunc,
     attributeDecl:          attributeDeclSAXFunc,
@@ -77,10 +78,9 @@ pub struct xmlSAXHandler {
     warning:                warningSAXFunc,
     error:                  errorSAXFunc,
     fatalError:             fatalErrorSAXFunc,
-    isStandalone:           isStandaloneSAXFunc,
-    hasInternalSubset:      hasInternalSubsetSAXFunc,
-    hasExternalSubset:      hasExternalSubsetSAXFunc,
+    getParameterEntity:     getParameterEntitySAXFunc,
     cdataBlock:             cdataBlockSAXFunc,
+    externalSubset:         externalSubsetSAXFunc,
     initialized:            c_uint,
     _private:               *c_void,
     startElementNs:         startElementNsSAX2Func,

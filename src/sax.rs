@@ -90,7 +90,7 @@ pub fn parse(src: &str) -> Port<ParseResult> {
     let (port, chan) = stream();
     unsafe {
         do src.to_c_str().with_ref |c_str| {
-            ffi::xmlSAXUserParseMemory(&extfn::new_sax_handler(),
+            ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
                                        cast::transmute(&chan),
                                        c_str,
                                        src.len() as c_int);
@@ -106,8 +106,8 @@ mod tests {
 
     static TEST_XML: &'static str =
 "<hello>
-    <this\\>
-    <a>test<\\a>
+    <this />
+    <a>test</a>
 </hello>";
 
     #[test]
@@ -115,11 +115,8 @@ mod tests {
         let port = parse(TEST_XML);
         loop {
             match port.recv() {
-                Ok(EndDocument) => {
-                    EndDocument.to_str();
-                    break;
-                }
-                msg => print(msg.unwrap().to_str()),
+                Ok(ref msg) => println(msg.to_str()),
+                Err(ref err) => println(err.to_str()),
             }
         }
     }
