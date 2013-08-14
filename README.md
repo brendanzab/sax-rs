@@ -15,3 +15,7 @@ loop {
     }
 }
 ~~~
+
+## Todo
+
+- Messages for start/end element namespace callbacks
