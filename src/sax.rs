@@ -28,7 +28,7 @@ use std::comm::{Port, stream};
 use std::hashmap::HashMap;
 use std::libc::{c_char, c_int};
 use std::str;
-use std::task;
+// use std::task;
 
 use error::ErrorData;
 
@@ -143,14 +143,14 @@ pub fn parse_xml(src: &str) -> SaxPort {
     let len = src.len() as c_int;
     do src.to_c_str().with_ref |c_str| {
         let (port, chan) = stream();
-        do task::spawn {
+        // do task::spawn {
             unsafe {
                 ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
                                            cast::transmute(&chan),
                                            c_str, len);
                 ffi::xmlCleanupParser();
             }
-        }
+        // }
         SaxPort { port: port }
     }
 }
