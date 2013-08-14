@@ -86,7 +86,38 @@ impl ToStr for Attributes {
 
 pub type ParseResult = Result<ParseMsg, error::ErrorData>;
 
-pub fn parse(src: &str) -> Port<ParseResult> {
+pub struct Parser {
+    priv port: Port<ParseResult>,
+    priv is_last: bool,
+}
+
+impl Parser {
+    /// Recives a new parse result. Fails if the parser has finished.
+    pub fn recv(&self) -> ParseResult {
+        self.port.try_recv().expect(
+            "Could not get a new parse result, the parser has already finished!"
+        )
+    }
+
+    pub fn try_recv(&self) -> Option<ParseResult> {
+        self.port.try_recv()
+    }
+}
+
+impl Iterator<ParseResult> for Parser {
+    #[inline]
+    fn next(&mut self) -> Option<ParseResult> {
+        if self.is_last { return None };
+
+        let msg = self.try_recv();
+        if msg == Some(Ok(EndDocument)) {
+            self.is_last = true;
+        }
+        msg
+    }
+}
+
+pub fn parse(src: &str) -> Parser {
     let (port, chan) = stream();
     unsafe {
         do src.to_c_str().with_ref |c_str| {
@@ -97,24 +128,20 @@ pub fn parse(src: &str) -> Port<ParseResult> {
             ffi::xmlCleanupParser();
         }
     }
-    port
+    Parser { port: port, is_last: false }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    static TEST_XML: &'static str =
-"<hello>
-    <this />
-    <a>test</a>
-</hello>";
+    static TEST_XML: &'static str = "<hello><this /><a foo=\"bar\">test</a></hello>";
 
     #[test]
     fn test() {
-        let port = parse(TEST_XML);
-        loop {
-            match port.recv() {
+        for r in parse(TEST_XML) {
+            match r {
+                Ok(IgnorableWhitespace(_)) => (),
                 Ok(ref msg) => println(msg.to_str()),
                 Err(ref err) => println(err.to_str()),
             }
