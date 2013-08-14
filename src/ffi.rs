@@ -13,11 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! Foreign Function bindings for `libxml2`. These definitions can be found in
+//! the `libxml/parser.h` header file.
+
 use std::libc::*;
 
 pub type xmlChar = c_uchar;
-
-// These can be found in libxml/parser.h
 
 /// Special constant found in SAX2 blocks initialized fields
 pub static XML_SAX2_MAGIC: c_uint = 0xDEEDBEAF;

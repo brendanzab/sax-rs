@@ -13,6 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//! External callback definitions
+
 use std::cast::transmute;
 use std::comm::Chan;
 use std::libc::{c_char, c_int, c_void};

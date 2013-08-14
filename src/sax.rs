@@ -29,23 +29,34 @@ use std::hashmap::HashMap;
 use std::libc::{c_char, c_int};
 use std::str;
 
+use error::ErrorData;
+
 pub mod error;
 pub mod ffi;
 mod extfn;
 
+/// Events to be sent by the parser.
 #[deriving(Eq, Clone)]
-pub enum ParseMsg {
+pub enum ParseEvent {
+    /// The document has begun to be processed.
     StartDocument,
+    /// The document processing has finished.
     EndDocument,
+    /// An opening tag has was parsed.
     StartElement(~str, Attributes),
+    /// A closing tag was parsed.
     EndElement(~str),
+    /// Some characters between tags have been recived.
     Characters(~str),
+    /// Ignorable whitespace.
     IgnorableWhitespace(~str),
+    /// A comment tag was parsed.
     Comment(~str),
+    /// A `CDATA` block was parsed.
     CdataBlock(~str),
 }
 
-impl ToStr for ParseMsg {
+impl ToStr for ParseEvent {
     fn to_str(&self) -> ~str {
         match *self {
             StartDocument => ~"START DOCUMENT",
@@ -60,6 +71,7 @@ impl ToStr for ParseMsg {
     }
 }
 
+/// A list of attributes stored in a hashmap.
 #[deriving(Eq, Clone)]
 pub struct Attributes(HashMap<~str, ~str>);
 
@@ -84,27 +96,49 @@ impl ToStr for Attributes {
     }
 }
 
-pub type ParseResult = Result<ParseMsg, error::ErrorData>;
+/// Either a parse event wrapped in `Ok` or some Error data wrapped in `Err`.
+pub type ParseResult = Result<ParseEvent, ErrorData>;
 
-pub struct Parser {
+/// A port to recieve `ParseResult`s from the parser.
+pub struct SaxPort {
     priv port: Port<ParseResult>,
 }
 
-impl GenericPort<ParseResult> for Parser {
-    /// Recives a new parse result. Fails if the parser has finished. Failure
-    /// can be avoided by finishing after recieving the `Ok(EndDocument)` result.
+impl GenericPort<ParseResult> for SaxPort {
+    /// Recives a new parse message.
+    ///
+    /// # Failure
+    ///
+    /// Fails if the method is called again after the final `Ok(EndDocument)`
+    /// parse result has been recived.
     pub fn recv(&self) -> ParseResult {
         self.port.try_recv().expect(
             "Could not get a new parse result, the parser has already finished!"
         )
     }
 
+    /// Receives a parse result wrapped in `Some`, or `None` if the parser has
+    /// finished.
     pub fn try_recv(&self) -> Option<ParseResult> {
         self.port.try_recv()
     }
 }
 
-pub fn parse(src: &str) -> Parser {
+/// Parses the entire XML string.
+///
+/// # Returns
+///
+/// A port that recieves parse results.
+///
+/// # Example
+///
+/// ~~~rust
+/// let port = parse_xml("<hullo><world /></hullo>");
+/// loop {
+///     if port.recv() == Ok(EndDocument) { break }
+/// }
+/// ~~~
+pub fn parse_xml(src: &str) -> SaxPort {
     let (port, chan) = stream();
     unsafe {
         do src.to_c_str().with_ref |c_str| {
@@ -115,18 +149,18 @@ pub fn parse(src: &str) -> Parser {
             ffi::xmlCleanupParser();
         }
     }
-    Parser { port: port }
+    SaxPort { port: port }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    static TEST_XML: &'static str = "<hello><this /><a foo=\"bar\">test</a></hello>";
-
     #[test]
     fn test() {
-        let sax = parse(TEST_XML);
+        let sax = parse_xml(
+            "<hello><this /><a foo=\"bar\">test</a></hello>"
+        );
         loop {
             let msg = sax.recv().unwrap();
             println(msg.to_str());

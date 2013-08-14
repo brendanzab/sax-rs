@@ -51,7 +51,7 @@ impl ToStr for ErrorLevel {
     }
 }
 
-/// An xml parse error
+/// An XML parse error
 #[deriving(Clone, Eq)]
 pub struct ErrorData {
     level: ErrorLevel,
