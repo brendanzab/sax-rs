@@ -162,9 +162,12 @@ mod tests {
             "<hello><this /><a foo=\"bar\">test</a></hello>"
         );
         loop {
-            let msg = sax.recv().unwrap();
-            println(msg.to_str());
-            if msg == EndDocument { break }
+            match sax.recv() {
+                Ok(StartDocument) => (),
+                Ok(EndDocument) => break,
+                Ok(event) => println(event.to_str()),
+                Err(err) => println(err.to_str()),
+            }
         }
     }
 }
