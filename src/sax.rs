@@ -69,14 +69,14 @@ impl ToStr for ParseEvent {
 }
 
 #[deriving(Eq, Clone)]
-struct Attribute {
+pub struct Attribute {
     name: ~str,
     value: ~str,
 }
 
 /// A list of attributes
 #[deriving(Eq, Clone)]
-struct Attributes(~[Attribute]);
+pub struct Attributes(~[Attribute]);
 
 impl Attributes {
     pub unsafe fn from_buf(atts: **ffi::xmlChar) -> Attributes {
@@ -95,21 +95,13 @@ impl Attributes {
     }
 
     pub fn find<'a>(&'a self, name: &str) -> Option<&'a str> {
-        for att in self.iter() {
-            if name == att.name {
-                return Some(att.value.as_slice());
-            }
-        }
-        None
+        self.iter()
+            .find(|att| name == att.name)
+            .map(|att| att.value.as_slice())
     }
 
     pub fn get<'a>(&'a self, name: &str) -> &'a str {
-        for att in self.iter() {
-            if name == att.name {
-                return att.value.as_slice();
-            }
-        }
-        fail!("Could not find an attribute with the name \"%s\"", name);
+        self.find(name).expect(fmt!("Could not find an attribute with the name \"%s\"", name))
     }
 
     pub fn find_clone(&self, name: &str) -> Option<~str> {
@@ -190,6 +182,30 @@ pub fn parse_xml(src: &str) -> SaxPort {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn get_mock_atts() -> Attributes {
+        Attributes(~[
+            Attribute { name: ~"foo", value: ~"0" },
+            Attribute { name: ~"bar", value: ~"1" },
+            Attribute { name: ~"baz", value: ~"2" }
+        ])
+    }
+
+    #[test]
+    fn test_att_get() {
+        let atts = get_mock_atts();
+        assert_eq!(atts.get("foo"), "0");
+        assert_eq!(atts.get("bar"), "1");
+        assert_eq!(atts.get("baz"), "2");
+    }
+
+    #[test]
+    fn test_att_find() {
+        let atts = get_mock_atts();
+        assert_eq!(atts.find("foo"), Some("0"));
+        assert_eq!(atts.find("bar"), Some("1"));
+        assert_eq!(atts.find("baz"), Some("2"));
+    }
 
     #[test]
     fn test() {
