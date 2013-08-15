@@ -25,7 +25,6 @@ extern mod extra;
 
 use std::cast;
 use std::comm::{Port, stream};
-use std::hashmap::HashMap;
 use std::libc::{c_char, c_int};
 use std::str;
 // use std::task;
@@ -69,27 +68,63 @@ impl ToStr for ParseEvent {
     }
 }
 
-/// A list of attributes stored in a hashmap.
 #[deriving(Eq, Clone)]
-pub struct Attributes(HashMap<~str, ~str>);
+struct Attribute {
+    name: ~str,
+    value: ~str,
+}
+
+/// A list of attributes
+#[deriving(Eq, Clone)]
+struct Attributes(~[Attribute]);
 
 impl Attributes {
-    unsafe fn from_buf(atts: **ffi::xmlChar) -> Attributes {
-        let mut map = Attributes(HashMap::new());
+    pub unsafe fn from_buf(atts: **ffi::xmlChar) -> Attributes {
+        let mut ret = Attributes(~[]);
         let mut ptr = atts as **c_char;
         while !ptr.is_null() && !(*ptr).is_null() {
-            map.insert(str::raw::from_c_str(*ptr),
-                       str::raw::from_c_str(*(ptr + 1)));
+            ret.push(
+                Attribute {
+                    name: str::raw::from_c_str(*ptr),
+                    value: str::raw::from_c_str(*(ptr + 1)),
+                }
+            );
             ptr = ptr + 2;
         }
-        map
+        ret
+    }
+
+    pub fn find<'a>(&'a self, name: &str) -> Option<&'a str> {
+        for att in self.iter() {
+            if name == att.name {
+                return Some(att.value.as_slice());
+            }
+        }
+        None
+    }
+
+    pub fn get<'a>(&'a self, name: &str) -> &'a str {
+        for att in self.iter() {
+            if name == att.name {
+                return att.value.as_slice();
+            }
+        }
+        fail!("Could not find an attribute with the name \"%s\"", name);
+    }
+
+    pub fn find_clone(&self, name: &str) -> Option<~str> {
+        self.find(name).map(|v| v.to_owned())
+    }
+
+    pub fn get_clone(&self, name: &str) -> ~str {
+        self.get(name).to_owned()
     }
 }
 
 impl ToStr for Attributes {
     fn to_str(&self) -> ~str {
-        do self.iter().map |(k, v)| {
-            fmt!(" %s=\"%s\"", *k, *v)
+        do self.iter().map |att| {
+            fmt!(" %s=\"%s\"", att.name, att.value)
         }.to_owned_vec().concat()
     }
 }
