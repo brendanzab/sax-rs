@@ -79,7 +79,7 @@ pub struct Attribute {
 pub struct Attributes(~[Attribute]);
 
 impl Attributes {
-    pub unsafe fn from_buf(atts: **ffi::xmlChar) -> Attributes {
+    unsafe fn from_buf(atts: **ffi::xmlChar) -> Attributes {
         let mut ret = Attributes(~[]);
         let mut ptr = atts as **c_char;
         while !ptr.is_null() && !(*ptr).is_null() {
