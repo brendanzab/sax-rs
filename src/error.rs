@@ -42,7 +42,7 @@ impl ErrorLevel {
 }
 
 impl ToStr for ErrorLevel {
-    pub fn to_str(&self) -> ~str {
+    fn to_str(&self) -> ~str {
         match *self {
             Warning => ~"Warning",
             Error   => ~"Error",
@@ -74,7 +74,7 @@ impl ErrorData {
 }
 
 impl ToStr for ErrorData {
-    pub fn to_str(&self) -> ~str {
+    fn to_str(&self) -> ~str {
         fmt!("%?:%? %s: %s",
              self.line,
              self.column,

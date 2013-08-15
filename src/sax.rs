@@ -144,7 +144,7 @@ impl GenericPort<ParseResult> for SaxPort {
     ///
     /// Fails if the method is called again after the final `Ok(EndDocument)`
     /// parse result has been recived.
-    pub fn recv(&self) -> ParseResult {
+    fn recv(&self) -> ParseResult {
         self.port.try_recv().expect(
             "Could not get a new parse result, the parser has already finished!"
         )
@@ -152,7 +152,7 @@ impl GenericPort<ParseResult> for SaxPort {
 
     /// Receives a parse result wrapped in `Some`, or `None` if the parser has
     /// finished.
-    pub fn try_recv(&self) -> Option<ParseResult> {
+    fn try_recv(&self) -> Option<ParseResult> {
         self.port.try_recv()
     }
 }
