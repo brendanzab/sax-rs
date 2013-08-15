@@ -49,8 +49,6 @@ pub enum ParseEvent {
     EndElement(~str),
     /// Some characters between tags have been recived.
     Characters(~str),
-    /// Ignorable whitespace.
-    IgnorableWhitespace(~str),
     /// A comment tag was parsed.
     Comment(~str),
     /// A `CDATA` block was parsed.
@@ -65,7 +63,6 @@ impl ToStr for ParseEvent {
             StartElement(ref name, ref atts) => fmt!("<%s%s>", *name, atts.to_str()),
             EndElement(ref name) => fmt!("</%s>", *name),
             Characters(ref ch) => ch.clone(),
-            IgnorableWhitespace(_) => ~"",
             Comment(ref value) => fmt!("<!--%s-->", *value),
             CdataBlock(ref value) => fmt!("<![CDATA[%s]]>", *value),
         }

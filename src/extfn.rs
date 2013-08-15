@@ -44,7 +44,7 @@ pub fn new_handler() -> ffi::xmlSAXHandler {
         endElement:             end_element,
         reference:              null(),
         characters:             characters,
-        ignorableWhitespace:    ignorable_whitespace,
+        ignorableWhitespace:    null(),     // use characters
         processingInstruction:  null(),
         comment:                comment,
         warning:                null(),     // use serror
@@ -99,14 +99,6 @@ extern "C" fn characters(ctx: *c_void, ch: *ffi::xmlChar, len: c_int) {
     unsafe {
         chan_from_ptr(ctx).send(
             Ok(Characters(from_buf_len(ch, len as uint)))
-        );
-    }
-}
-
-extern "C" fn ignorable_whitespace(ctx: *c_void, ch: *ffi::xmlChar, len: c_int) {
-    unsafe {
-        chan_from_ptr(ctx).send(
-            Ok(IgnorableWhitespace(from_buf_len(ch, len as uint)))
         );
     }
 }
