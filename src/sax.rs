@@ -163,6 +163,8 @@ impl GenericPort<ParseResult> for SaxPort {
 ///     if port.recv() == Ok(EndDocument) { break }
 /// }
 /// ~~~
+#[fixed_stack_segment]
+#[inline(never)]
 pub fn parse_xml(src: &str) -> SaxPort {
     let len = src.len() as c_int;
     do src.to_c_str().with_ref |c_str| {
