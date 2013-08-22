@@ -25,39 +25,41 @@ use super::*;
 use super::error::ErrorData;
 
 pub fn new_handler() -> ffi::xmlSAXHandler {
-    ffi::xmlSAXHandler {
-        internalSubset:         null(),
-        isStandalone:           null(),
-        hasInternalSubset:      null(),
-        hasExternalSubset:      null(),
-        resolveEntity:          null(),
-        getEntity:              null(),
-        entityDecl:             null(),
-        notationDecl:           null(),
-        attributeDecl:          null(),
-        elementDecl:            null(),
-        unparsedEntityDecl:     null(),
-        setDocumentLocator:     null(),
-        startDocument:          start_document,
-        endDocument:            end_document,
-        startElement:           start_element,
-        endElement:             end_element,
-        reference:              null(),
-        characters:             characters,
-        ignorableWhitespace:    null(),     // use characters
-        processingInstruction:  null(),
-        comment:                comment,
-        warning:                null(),     // use serror
-        error:                  null(),     // use serror
-        fatalError:             null(),     // use serror
-        getParameterEntity:     null(),
-        cdataBlock:             cdata_block,
-        externalSubset:         null(),
-        initialized:            ffi::XML_SAX2_MAGIC,
-        _private:               null(),
-        startElementNs:         null(),
-        endElementNs:           null(),
-        serror:                 serror,
+    unsafe {
+        ffi::xmlSAXHandler {
+            internalSubset:         transmute(null::<()>()),
+            isStandalone:           transmute(null::<()>()),
+            hasInternalSubset:      transmute(null::<()>()),
+            hasExternalSubset:      transmute(null::<()>()),
+            resolveEntity:          transmute(null::<()>()),
+            getEntity:              transmute(null::<()>()),
+            entityDecl:             transmute(null::<()>()),
+            notationDecl:           transmute(null::<()>()),
+            attributeDecl:          transmute(null::<()>()),
+            elementDecl:            transmute(null::<()>()),
+            unparsedEntityDecl:     transmute(null::<()>()),
+            setDocumentLocator:     transmute(null::<()>()),
+            startDocument:          start_document,
+            endDocument:            end_document,
+            startElement:           start_element,
+            endElement:             end_element,
+            reference:              transmute(null::<()>()),
+            characters:             characters,
+            ignorableWhitespace:    transmute(null::<()>()),     // use characters
+            processingInstruction:  transmute(null::<()>()),
+            comment:                comment,
+            warning:                transmute(null::<()>()),     // use serror
+            error:                  transmute(null::<()>()),     // use serror
+            fatalError:             transmute(null::<()>()),     // use serror
+            getParameterEntity:     transmute(null::<()>()),
+            cdataBlock:             cdata_block,
+            externalSubset:         transmute(null::<()>()),
+            initialized:            ffi::XML_SAX2_MAGIC,
+            _private:               transmute(null::<()>()),
+            startElementNs:         transmute(null::<()>()),
+            endElementNs:           transmute(null::<()>()),
+            serror:                 serror,
+        }
     }
 }
 

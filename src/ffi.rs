@@ -23,36 +23,36 @@ pub type xmlChar = c_uchar;
 /// Special constant found in SAX2 blocks initialized fields
 pub static XML_SAX2_MAGIC: c_uint = 0xDEEDBEAF;
 
-pub type resolveEntitySAXFunc           = *u8;  // typedef xmlParserInputPtr (*resolveEntitySAXFunc) (void *ctx, const xmlChar *publicId, const xmlChar *systemId);
-pub type internalSubsetSAXFunc          = *u8;  // typedef void (*internalSubsetSAXFunc) (void *ctx, const xmlChar *name, const xmlChar *ExternalID, const xmlChar *SystemID);
-pub type externalSubsetSAXFunc          = *u8;  // typedef void (*externalSubsetSAXFunc) (void *ctx, const xmlChar *name, const xmlChar *ExternalID, const xmlChar *SystemID);
-pub type getEntitySAXFunc               = *u8;  // typedef xmlEntityPtr (*getEntitySAXFunc) (void *ctx, const xmlChar *name);
-pub type getParameterEntitySAXFunc      = *u8;  // typedef xmlEntityPtr (*getParameterEntitySAXFunc) (void *ctx, const xmlChar *name);
-pub type entityDeclSAXFunc              = *u8;  // typedef void (*entityDeclSAXFunc) (void *ctx, const xmlChar *name, int type, const xmlChar *publicId, const xmlChar *systemId, xmlChar *content);
-pub type notationDeclSAXFunc            = *u8;  // typedef void (*notationDeclSAXFunc)(void *ctx, const xmlChar *name, const xmlChar *publicId, const xmlChar *systemId);
-pub type attributeDeclSAXFunc           = *u8;  // typedef void (*attributeDeclSAXFunc)(void *ctx, const xmlChar *elem, const xmlChar *fullname, int type, int def, const xmlChar *defaultValue, xmlEnumerationPtr tree);
-pub type elementDeclSAXFunc             = *u8;  // typedef void (*elementDeclSAXFunc)(void *ctx, const xmlChar *name, int type, xmlElementContentPtr content);
-pub type unparsedEntityDeclSAXFunc      = *u8;  // typedef void (*unparsedEntityDeclSAXFunc)(void *ctx, const xmlChar *name, const xmlChar *publicId, const xmlChar *systemId, const xmlChar *notationName);
-pub type setDocumentLocatorSAXFunc      = *u8;  // typedef void (*setDocumentLocatorSAXFunc) (void *ctx, xmlSAXLocatorPtr loc);
-pub type startDocumentSAXFunc           = *u8;  // typedef void (*startDocumentSAXFunc) (void *ctx);
-pub type endDocumentSAXFunc             = *u8;  // typedef void (*endDocumentSAXFunc) (void *ctx);
-pub type startElementSAXFunc            = *u8;  // typedef void (*startElementSAXFunc) (void *ctx, const xmlChar *name, const xmlChar **atts);
-pub type endElementSAXFunc              = *u8;  // typedef void (*endElementSAXFunc) (void *ctx, const xmlChar *name);
-pub type referenceSAXFunc               = *u8;  // typedef void (*referenceSAXFunc) (void *ctx, const xmlChar *name);
-pub type charactersSAXFunc              = *u8;  // typedef void (*charactersSAXFunc) (void *ctx, const xmlChar *ch, int len);
-pub type ignorableWhitespaceSAXFunc     = *u8;  // typedef void (*ignorableWhitespaceSAXFunc) (void *ctx, const xmlChar *ch, int len);
-pub type processingInstructionSAXFunc   = *u8;  // typedef void (*processingInstructionSAXFunc) (void *ctx, const xmlChar *target, const xmlChar *data);
-pub type commentSAXFunc                 = *u8;  // typedef void (*commentSAXFunc) (void *ctx, const xmlChar *value);
-pub type cdataBlockSAXFunc              = *u8;  // typedef void (*cdataBlockSAXFunc) (void *ctx, const xmlChar *value, int len);
-pub type warningSAXFunc                 = *u8;  // typedef void (*warningSAXFunc) (void *ctx, const char *msg, ...) LIBXML_ATTR_FORMAT(2,3);
-pub type errorSAXFunc                   = *u8;  // typedef void (*errorSAXFunc) (void *ctx, const char *msg, ...) LIBXML_ATTR_FORMAT(2,3);
-pub type fatalErrorSAXFunc              = *u8;  // typedef void (*fatalErrorSAXFunc) (void *ctx, const char *msg, ...) LIBXML_ATTR_FORMAT(2,3);
-pub type isStandaloneSAXFunc            = *u8;  // typedef int (*isStandaloneSAXFunc) (void *ctx);
-pub type hasInternalSubsetSAXFunc       = *u8;  // typedef int (*hasInternalSubsetSAXFunc) (void *ctx);
-pub type hasExternalSubsetSAXFunc       = *u8;  // typedef int (*hasExternalSubsetSAXFunc) (void *ctx);
-pub type startElementNsSAX2Func         = *u8;  // typedef void (*startElementNsSAX2Func) (void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI, int nb_namespaces, const xmlChar **namespaces, int nb_attributes, int nb_defaulted, const xmlChar **attributes);
-pub type endElementNsSAX2Func           = *u8;  // typedef void (*endElementNsSAX2Func)   (void *ctx, const xmlChar *localname, const xmlChar *prefix, const xmlChar *URI);
-pub type xmlStructuredErrorFunc         = *u8;  // typedef void (*xmlStructuredErrorFunc) (void *userData, xmlErrorPtr error);
+pub type resolveEntitySAXFunc           = extern "C" fn(ctx: *c_void, publicId: *xmlChar, systemId: *xmlChar) -> *c_void /*xmlParserInputPtr*/;
+pub type internalSubsetSAXFunc          = extern "C" fn(ctx: *c_void, name: *xmlChar, ExternalID: *xmlChar, SystemID: *xmlChar);
+pub type externalSubsetSAXFunc          = extern "C" fn(ctx: *c_void, name: *xmlChar, ExternalID: *xmlChar, SystemID: *xmlChar);
+pub type getEntitySAXFunc               = extern "C" fn(ctx: *c_void, name: *xmlChar) -> *c_void /*xmlEntityPtr*/;
+pub type getParameterEntitySAXFunc      = extern "C" fn(ctx: *c_void, name: *xmlChar) -> *c_void /*xmlEntityPtr*/;
+pub type entityDeclSAXFunc              = extern "C" fn(ctx: *c_void, name: *xmlChar, ty: c_int, publicId: *xmlChar, systemId: *xmlChar, content: *xmlChar);
+pub type notationDeclSAXFunc            = extern "C" fn(ctx: *c_void, name: *xmlChar, publicId: *xmlChar, systemId: *xmlChar);
+pub type attributeDeclSAXFunc           = extern "C" fn(ctx: *c_void, elem: *xmlChar, fullname: *xmlChar, ty: c_int, def: c_int, defaultValue: *xmlChar, tree: *c_void /*xmlEnumerationPtr*/);
+pub type elementDeclSAXFunc             = extern "C" fn(ctx: *c_void, name: *xmlChar, ty: c_int, content: *c_void /*xmlElementContentPtr*/);
+pub type unparsedEntityDeclSAXFunc      = extern "C" fn(ctx: *c_void, name: *xmlChar, publicId: *xmlChar, systemId: *xmlChar, notationName: *xmlChar);
+pub type setDocumentLocatorSAXFunc      = extern "C" fn(ctx: *c_void, loc: *c_void /*xmlSAXLocatorPtr*/);
+pub type startDocumentSAXFunc           = extern "C" fn(ctx: *c_void);
+pub type endDocumentSAXFunc             = extern "C" fn(ctx: *c_void);
+pub type startElementSAXFunc            = extern "C" fn(ctx: *c_void, name: *xmlChar, atts: **xmlChar);
+pub type endElementSAXFunc              = extern "C" fn(ctx: *c_void, name: *xmlChar);
+pub type referenceSAXFunc               = extern "C" fn(ctx: *c_void, name: *xmlChar);
+pub type charactersSAXFunc              = extern "C" fn(ctx: *c_void, ch: *xmlChar, len: c_int);
+pub type ignorableWhitespaceSAXFunc     = extern "C" fn(ctx: *c_void, ch: *xmlChar, len: c_int);
+pub type processingInstructionSAXFunc   = extern "C" fn(ctx: *c_void, target: *xmlChar, data: *xmlChar);
+pub type commentSAXFunc                 = extern "C" fn(ctx: *c_void, value: *xmlChar);
+pub type cdataBlockSAXFunc              = extern "C" fn(ctx: *c_void, value: *xmlChar, len: c_int);
+pub type warningSAXFunc                 = extern "C" fn(ctx: *c_void /*const char *msg, ...*/);
+pub type errorSAXFunc                   = extern "C" fn(ctx: *c_void /*const char *msg, ...*/);
+pub type fatalErrorSAXFunc              = extern "C" fn(ctx: *c_void /*const char *msg, ...*/);
+pub type isStandaloneSAXFunc            = extern "C" fn(ctx: *c_void) -> int;
+pub type hasInternalSubsetSAXFunc       = extern "C" fn(ctx: *c_void) -> int;
+pub type hasExternalSubsetSAXFunc       = extern "C" fn(ctx: *c_void) -> int;
+pub type startElementNsSAX2Func         = extern "C" fn(ctx: *c_void, localname: *xmlChar, prefix: *xmlChar, URI: *xmlChar, nb_namespaces: c_int, namespaces: **xmlChar, nb_attributes: c_int, nb_defaulted: c_int, attributes: **xmlChar);
+pub type endElementNsSAX2Func           = extern "C" fn(ctx: *c_void, localname: *xmlChar, prefix: *xmlChar, URI: *xmlChar);
+pub type xmlStructuredErrorFunc         = extern "C" fn(userData: *c_void, error: xmlErrorPtr);
 
 pub struct xmlSAXHandler {
     internalSubset:         internalSubsetSAXFunc,
@@ -129,6 +129,8 @@ pub struct xmlError {
     /// the node in the tree
     node: *c_void,
 }
+
+pub type xmlErrorPtr = *xmlError;
 
 /// libxml2 function bindings
 #[link_args="-lxml2"]
