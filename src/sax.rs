@@ -86,10 +86,10 @@ impl Attributes {
             ret.push(
                 Attribute {
                     name: str::raw::from_c_str(*ptr),
-                    value: str::raw::from_c_str(*(ptr + 1)),
+                    value: str::raw::from_c_str(*ptr.offset(1)),
                 }
             );
-            ptr = ptr + 2;
+            ptr = ptr.offset(2);
         }
         ret
     }
