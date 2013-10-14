@@ -21,6 +21,8 @@
 #[comment = "Wrapper for libxml2's SAX parser."];
 #[crate_type = "lib"];
 
+#[feature(globs)];
+
 extern mod extra;
 
 use std::cast;

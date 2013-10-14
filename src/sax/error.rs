@@ -62,7 +62,7 @@ pub struct ErrorData {
 
 impl ErrorData {
     pub unsafe fn from_ptr(error: *ffi::xmlError) -> Option<ErrorData> {
-        do ErrorLevel::from_constant((*error).level).map |&level| {
+        do ErrorLevel::from_constant((*error).level).map |level| {
             ErrorData {
                 level:      level,
                 message:    from_c_str((*error).message),
