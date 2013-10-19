@@ -25,41 +25,39 @@ use super::*;
 use super::error::ErrorData;
 
 pub fn new_handler() -> ffi::xmlSAXHandler {
-    unsafe {
-        ffi::xmlSAXHandler {
-            internalSubset:         transmute(null::<()>()),
-            isStandalone:           transmute(null::<()>()),
-            hasInternalSubset:      transmute(null::<()>()),
-            hasExternalSubset:      transmute(null::<()>()),
-            resolveEntity:          transmute(null::<()>()),
-            getEntity:              transmute(null::<()>()),
-            entityDecl:             transmute(null::<()>()),
-            notationDecl:           transmute(null::<()>()),
-            attributeDecl:          transmute(null::<()>()),
-            elementDecl:            transmute(null::<()>()),
-            unparsedEntityDecl:     transmute(null::<()>()),
-            setDocumentLocator:     transmute(null::<()>()),
-            startDocument:          start_document,
-            endDocument:            end_document,
-            startElement:           start_element,
-            endElement:             end_element,
-            reference:              transmute(null::<()>()),
-            characters:             characters,
-            ignorableWhitespace:    transmute(null::<()>()),     // use characters
-            processingInstruction:  transmute(null::<()>()),
-            comment:                comment,
-            warning:                transmute(null::<()>()),     // use serror
-            error:                  transmute(null::<()>()),     // use serror
-            fatalError:             transmute(null::<()>()),     // use serror
-            getParameterEntity:     transmute(null::<()>()),
-            cdataBlock:             cdata_block,
-            externalSubset:         transmute(null::<()>()),
-            initialized:            ffi::XML_SAX2_MAGIC,
-            _private:               transmute(null::<()>()),
-            startElementNs:         transmute(null::<()>()),
-            endElementNs:           transmute(null::<()>()),
-            serror:                 serror,
-        }
+    ffi::xmlSAXHandler {
+        internalSubset:         None,
+        isStandalone:           None,
+        hasInternalSubset:      None,
+        hasExternalSubset:      None,
+        resolveEntity:          None,
+        getEntity:              None,
+        entityDecl:             None,
+        notationDecl:           None,
+        attributeDecl:          None,
+        elementDecl:            None,
+        unparsedEntityDecl:     None,
+        setDocumentLocator:     None,
+        startDocument:          Some(start_document),
+        endDocument:            Some(end_document),
+        startElement:           Some(start_element),
+        endElement:             Some(end_element),
+        reference:              None,
+        characters:             Some(characters),
+        ignorableWhitespace:    None,               // use characters
+        processingInstruction:  None,
+        comment:                Some(comment),
+        warning:                None,               // use serror
+        error:                  None,               // use serror
+        fatalError:             None,               // use serror
+        getParameterEntity:     None,
+        cdataBlock:             Some(cdata_block),
+        externalSubset:         None,
+        initialized:            ffi::XML_SAX2_MAGIC,
+        _private:               null(),
+        startElementNs:         None,
+        endElementNs:           None,
+        serror:                 Some(serror),
     }
 }
 

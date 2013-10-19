@@ -75,10 +75,10 @@ impl ErrorData {
 
 impl ToStr for ErrorData {
     fn to_str(&self) -> ~str {
-        fmt!("%?:%? %s: %s",
-             self.line,
-             self.column,
-             self.level.to_str(),
-             self.message)
+        format!("{}:{} {}: {}",
+                self.line,
+                self.column,
+                self.level.to_str(),
+                self.message)
     }
 }

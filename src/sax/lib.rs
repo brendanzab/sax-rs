@@ -61,11 +61,11 @@ impl ToStr for ParseEvent {
         match *self {
             StartDocument => ~"START DOCUMENT",
             EndDocument => ~"END DOCUMENT",
-            StartElement(ref name, ref atts) => fmt!("<%s%s>", *name, atts.to_str()),
-            EndElement(ref name) => fmt!("</%s>", *name),
+            StartElement(ref name, ref atts) => format!("<{}{}>", *name, atts.to_str()),
+            EndElement(ref name) => format!("</{}>", *name),
             Characters(ref ch) => ch.clone(),
-            Comment(ref value) => fmt!("<!--%s-->", *value),
-            CdataBlock(ref value) => fmt!("<![CDATA[%s]]>", *value),
+            Comment(ref value) => format!("<!--{}-->", *value),
+            CdataBlock(ref value) => format!("<![CDATA[{}]]>", *value),
         }
     }
 }
@@ -103,7 +103,7 @@ impl Attributes {
     }
 
     pub fn get<'a>(&'a self, name: &str) -> &'a str {
-        self.find(name).expect(fmt!("Could not find an attribute with the name \"%s\"", name))
+        self.find(name).expect(format!("Could not find an attribute with the name \"{}\"", name))
     }
 
     pub fn find_clone(&self, name: &str) -> Option<~str> {
@@ -118,7 +118,7 @@ impl Attributes {
 impl ToStr for Attributes {
     fn to_str(&self) -> ~str {
         do self.iter().map |att| {
-            fmt!(" %s=\"%s\"", att.name, att.value)
+            format!(" {}=\"{}\"", att.name, att.value)
         }.to_owned_vec().concat()
     }
 }
