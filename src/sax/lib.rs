@@ -117,9 +117,9 @@ impl Attributes {
 
 impl ToStr for Attributes {
     fn to_str(&self) -> ~str {
-        do self.iter().map |att| {
+        self.iter().map(|att| {
             format!(" {}=\"{}\"", att.name, att.value)
-        }.to_owned_vec().concat()
+        }).to_owned_vec().concat()
     }
 }
 
@@ -165,11 +165,10 @@ impl GenericPort<ParseResult> for SaxPort {
 ///     if port.recv() == Ok(EndDocument) { break }
 /// }
 /// ~~~
-#[fixed_stack_segment]
 #[inline(never)]
 pub fn parse_xml(src: &str) -> SaxPort {
     let len = src.len() as c_int;
-    do src.to_c_str().with_ref |c_str| {
+    src.to_c_str().with_ref(|c_str| {
         let (port, chan) = stream();
         // do task::spawn {
             unsafe {
@@ -180,7 +179,7 @@ pub fn parse_xml(src: &str) -> SaxPort {
             }
         // }
         SaxPort { port: port }
-    }
+    })
 }
 
 #[cfg(test)]
