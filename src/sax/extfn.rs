@@ -121,8 +121,8 @@ extern "C" fn cdata_block(ctx: *c_void, value: *ffi::xmlChar, len: c_int) {
 
 extern "C" fn serror(ctx: *c_void, error: *ffi::xmlError) {
     unsafe {
-        do ErrorData::from_ptr(error).map |err| {
+        ErrorData::from_ptr(error).map(|err| {
             chan_from_ptr(ctx).send(Err(err.clone()));
-        };
+        });
     }
 }
