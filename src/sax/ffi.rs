@@ -133,7 +133,7 @@ pub struct xmlError {
 pub type xmlErrorPtr = *xmlError;
 
 /// libxml2 function bindings
-#[link_args="-lxml2"]
+#[link(name = "xml2")]
 extern "C" {
     pub fn xmlCleanupParser();
     pub fn xmlSAXUserParseMemory(sax: *xmlSAXHandler,
