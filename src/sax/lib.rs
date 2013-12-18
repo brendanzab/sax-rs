@@ -13,12 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[link(name = "sax",
-       vers = "0.1",
-       author = "Brendan Zabarauskas",
-       url = "https://github.com/bjz/sax-rs")];
-
 #[comment = "Wrapper for libxml2's SAX parser."];
+#[pkgid = "github.com/bjz/sax-rs#sax:0.1"];
+
 #[crate_type = "lib"];
 
 #[feature(globs)];
