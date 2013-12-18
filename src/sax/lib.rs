@@ -23,7 +23,7 @@
 extern mod extra;
 
 use std::cast;
-use std::comm::{Port, stream};
+use std::comm::{Port, Chan};
 use std::libc::{c_char, c_int};
 use std::str;
 // use std::task;
@@ -123,31 +123,6 @@ impl ToStr for Attributes {
 /// Either a parse event wrapped in `Ok` or some Error data wrapped in `Err`.
 pub type ParseResult = Result<ParseEvent, ErrorData>;
 
-/// A port to recieve `ParseResult`s from the parser.
-pub struct SaxPort {
-    priv port: Port<ParseResult>,
-}
-
-impl GenericPort<ParseResult> for SaxPort {
-    /// Recives a new parse message.
-    ///
-    /// # Failure
-    ///
-    /// Fails if the method is called again after the final `Ok(EndDocument)`
-    /// parse result has been recived.
-    fn recv(&self) -> ParseResult {
-        self.port.try_recv().expect(
-            "Could not get a new parse result, the parser has already finished!"
-        )
-    }
-
-    /// Receives a parse result wrapped in `Some`, or `None` if the parser has
-    /// finished.
-    fn try_recv(&self) -> Option<ParseResult> {
-        self.port.try_recv()
-    }
-}
-
 /// Parses the entire XML string.
 ///
 /// # Returns
@@ -163,10 +138,10 @@ impl GenericPort<ParseResult> for SaxPort {
 /// }
 /// ~~~
 #[inline(never)]
-pub fn parse_xml(src: &str) -> SaxPort {
+pub fn parse_xml(src: &str) -> Port<ParseResult> {
     let len = src.len() as c_int;
     src.to_c_str().with_ref(|c_str| {
-        let (port, chan) = stream();
+        let (port, chan) = Chan::new();
         // do task::spawn {
             unsafe {
                 ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
@@ -175,7 +150,7 @@ pub fn parse_xml(src: &str) -> SaxPort {
                 ffi::xmlCleanupParser();
             }
         // }
-        SaxPort { port: port }
+        port
     })
 }
 
