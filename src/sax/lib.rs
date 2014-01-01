@@ -14,7 +14,7 @@
 // limitations under the License.
 
 #[comment = "Wrapper for libxml2's SAX parser."];
-#[pkgid = "github.com/bjz/sax-rs#sax:0.1"];
+#[crate_id = "github.com/bjz/sax-rs#sax:0.1"];
 
 #[crate_type = "lib"];
 

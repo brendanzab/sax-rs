@@ -2,6 +2,10 @@
 
 Wrapper for libxml2's SAX parser.
 
+## Compile
+
+Run `rustpkg build sax`.
+
 ## A simple example
 
 ~~~rust
@@ -19,3 +23,10 @@ loop {
 ## Todo
 
 - Messages for start/end element namespace callbacks
+
+## License
+
+This project is licensed under Apache License Version 2.0.
+
+Please see the LICENSE file for more information.
+
