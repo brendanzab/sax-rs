@@ -79,7 +79,7 @@ pub struct Attributes(~[Attribute]);
 
 impl Attributes {
     unsafe fn from_buf(atts: **ffi::xmlChar) -> Attributes {
-        let mut ret = Attributes(~[]);
+        let mut ret = ~[];
         let mut ptr = atts as **c_char;
         while !ptr.is_null() && !(*ptr).is_null() {
             ret.push(
@@ -90,13 +90,14 @@ impl Attributes {
             );
             ptr = ptr.offset(2);
         }
-        ret
+        Attributes(ret)
     }
 
     pub fn find<'a>(&'a self, name: &str) -> Option<&'a str> {
-        self.iter()
-            .find(|att| name == att.name)
-            .map(|att| att.value.as_slice())
+        let Attributes(ref s) = *self;
+        s.iter()
+         .find(|att| name == att.name)
+         .map(|att| att.value.as_slice())
     }
 
     pub fn get<'a>(&'a self, name: &str) -> &'a str {
@@ -114,7 +115,8 @@ impl Attributes {
 
 impl ToStr for Attributes {
     fn to_str(&self) -> ~str {
-        self.iter().map(|att| {
+        let Attributes(ref s) = *self;
+        s.iter().map(|att| {
             format!(" {}=\"{}\"", att.name, att.value)
         }).to_owned_vec().concat()
     }
