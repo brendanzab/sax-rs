@@ -20,7 +20,7 @@
 
 #[feature(globs)];
 
-extern mod extra;
+extern mod extra = "extra#0.10-pre";
 
 use std::cast;
 use std::comm::{Port, Chan};
