@@ -135,6 +135,7 @@ pub type xmlErrorPtr = *xmlError;
 /// libxml2 function bindings
 #[link(name = "xml2")]
 extern "C" {
+    pub fn xmlInitParser();
     pub fn xmlCleanupParser();
     pub fn xmlSAXUserParseMemory(sax: *xmlSAXHandler,
                                  user_data: *c_void,
