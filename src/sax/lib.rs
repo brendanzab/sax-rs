@@ -215,8 +215,8 @@ mod tests {
             match sax.recv() {
                 Ok(StartDocument) => (),
                 Ok(EndDocument) => break,
-                Ok(event) => println(event.to_str()),
-                Err(err) => println(err.to_str()),
+                Ok(event) => println!("{}", event.to_str()),
+                Err(err) => println!("{}", err.to_str()),
             }
         }
     }
