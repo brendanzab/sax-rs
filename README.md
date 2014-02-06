@@ -5,13 +5,13 @@ Wrapper for libxml2's SAX parser.
 ## A simple example
 
 ~~~rust
-let sax = parse_xml("<yo>hullo!</yo>");
-loop {
-    match sax.recv() {
+let parser = parse_xml("<yo>hullo!</yo>");
+for result in parser.iter() {
+    match result {
         Ok(StartDocument) => (),
         Ok(EndDocument) => break,
-        Ok(event) => println(event.to_str()),
-        Err(err) => println(err.to_str()),
+        Ok(event) => println!("{}", event.to_str()),
+        Err(err) => println!("{}", err.to_str()),
     }
 }
 ~~~

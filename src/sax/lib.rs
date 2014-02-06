@@ -135,9 +135,14 @@ pub type ParseResult = Result<ParseEvent, ErrorData>;
 /// # Example
 ///
 /// ~~~rust
-/// let port = parse_xml("<hullo><world /></hullo>");
-/// loop {
-///     if port.recv() == Ok(EndDocument) { break }
+/// let parser = parse_xml("<yo>hullo!</yo>");
+/// for result in parser.iter() {
+///     match result {
+///         Ok(StartDocument) => (),
+///         Ok(EndDocument) => break,
+///         Ok(event) => println!("{}", event.to_str()),
+///         Err(err) => println!("{}", err.to_str()),
+///     }
 /// }
 /// ~~~
 #[inline(never)]
