@@ -5,4 +5,7 @@ install:
   - sudo apt-get install libxml2
   - sudo apt-get install rust-nightly
 script:
-  - rustpkg build sax
+  - make
+  - sudo make install
+  - sudo make uninstall
+  - make clean

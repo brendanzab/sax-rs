@@ -2,10 +2,6 @@
 
 Wrapper for libxml2's SAX parser.
 
-## Compile
-
-Run `rustpkg build sax`.
-
 ## A simple example
 
 ~~~rust
@@ -18,6 +14,24 @@ loop {
         Err(err) => println(err.to_str()),
     }
 }
+~~~
+
+## Compile
+
+~~~
+make
+~~~
+
+## Run tests
+
+~~~
+make check
+~~~
+
+## Install
+
+~~~
+make install
 ~~~
 
 ## Todo
