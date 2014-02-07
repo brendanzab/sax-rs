@@ -27,6 +27,7 @@ use std::cast;
 use std::comm::{Port, Chan};
 use std::libc::{c_char, c_int};
 use std::str;
+use std::io::File;
 // use std::task;
 
 use error::ErrorData;
@@ -126,6 +127,20 @@ impl ToStr for Attributes {
 /// Either a parse event wrapped in `Ok` or some Error data wrapped in `Err`.
 pub type ParseResult = Result<ParseEvent, ErrorData>;
 
+#[inline(never)]
+pub fn init() {
+  unsafe {
+    ffi::xmlInitParser();
+  }
+}
+
+#[inline(never)]
+pub fn cleanup() {
+  unsafe {
+    ffi::xmlCleanupParser();
+  }
+}
+
 /// Parses the entire XML string.
 ///
 /// # Returns
@@ -169,6 +184,14 @@ pub fn parse_xml(src: &str) -> Port<ParseResult> {
         // }
         port
     })
+}
+
+#[inline(never)]
+pub fn parse_file(path: &Path) -> Port<ParseResult> {
+  match std::str::from_utf8_owned(File::open(path).read_to_end()) {
+    Some(text) => parse_xml(text),
+    None => unreachable!()
+  }
 }
 
 #[cfg(test)]
