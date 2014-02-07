@@ -21,6 +21,7 @@
 #[feature(globs)];
 
 extern mod extra = "extra#0.10-pre";
+extern mod sync;
 
 use std::cast;
 use std::comm::{Port, Chan};
@@ -134,13 +135,28 @@ pub type ParseResult = Result<ParseEvent, ErrorData>;
 /// # Example
 ///
 /// ~~~rust
-/// let port = parse_xml("<hullo><world /></hullo>");
-/// loop {
-///     if port.recv() == Ok(EndDocument) { break }
+/// let parser = parse_xml("<yo>hullo!</yo>");
+/// for result in parser.iter() {
+///     match result {
+///         Ok(StartDocument) => (),
+///         Ok(EndDocument) => break,
+///         Ok(event) => println!("{}", event.to_str()),
+///         Err(err) => println!("{}", err.to_str()),
+///     }
 /// }
 /// ~~~
 #[inline(never)]
 pub fn parse_xml(src: &str) -> Port<ParseResult> {
+    // ensure that the xml library is ready for use
+    use sync::one::{Once, ONCE_INIT};
+    static mut INIT: Once = ONCE_INIT;
+    unsafe {
+        INIT.doit(|| {
+            ffi::xmlInitParser();
+            std::rt::at_exit(proc() ffi::xmlCleanupParser());
+        })
+    }
+
     let len = src.len() as c_int;
     src.to_c_str().with_ref(|c_str| {
         let (port, chan) = Chan::new();
@@ -149,7 +165,6 @@ pub fn parse_xml(src: &str) -> Port<ParseResult> {
                 ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
                                            cast::transmute(&chan),
                                            c_str, len);
-                ffi::xmlCleanupParser();
             }
         // }
         port
