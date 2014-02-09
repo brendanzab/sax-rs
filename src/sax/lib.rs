@@ -27,6 +27,7 @@ use std::cast;
 use std::comm::{Port, Chan};
 use std::libc::{c_char, c_int};
 use std::str;
+use std::io::{File, IoResult};
 // use std::task;
 
 use error::ErrorData;
@@ -135,7 +136,7 @@ pub type ParseResult = Result<ParseEvent, ErrorData>;
 /// # Example
 ///
 /// ~~~rust
-/// let parser = parse_xml("<yo>hullo!</yo>");
+/// let parser = parse_str("<yo>hullo!</yo>");
 /// for result in parser.iter() {
 ///     match result {
 ///         Ok(StartDocument) => (),
@@ -146,7 +147,7 @@ pub type ParseResult = Result<ParseEvent, ErrorData>;
 /// }
 /// ~~~
 #[inline(never)]
-pub fn parse_xml(src: &str) -> Port<ParseResult> {
+pub fn parse_str(src: &str) -> Port<ParseResult> {
     // ensure that the xml library is ready for use
     use sync::one::{Once, ONCE_INIT};
     static mut INIT: Once = ONCE_INIT;
@@ -168,6 +169,16 @@ pub fn parse_xml(src: &str) -> Port<ParseResult> {
             }
         // }
         port
+    })
+}
+
+pub fn parse_file(path: &Path) -> IoResult< Port<ParseResult> > {
+  File::open(path)
+    .and_then( |mut file| {
+      file.read_to_str()
+    })
+    .and_then( |contents| {
+      Ok(parse_str(contents))
     })
 }
 
@@ -201,7 +212,7 @@ mod tests {
 
     #[test]
     fn test() {
-        let sax = parse_xml(
+        let sax = parse_str(
             "<hello><this /><a foo=\"bar\">test</a></hello>"
         );
         loop {

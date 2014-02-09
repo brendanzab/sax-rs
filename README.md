@@ -5,7 +5,7 @@ Wrapper for libxml2's SAX parser.
 ## A simple example
 
 ~~~rust
-let parser = parse_xml("<yo>hullo!</yo>");
+let parser = parse_str("<yo>hullo!</yo>");
 for result in parser.iter() {
     match result {
         Ok(StartDocument) => (),
