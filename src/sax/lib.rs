@@ -20,8 +20,8 @@
 
 #[feature(globs)];
 
-extern mod extra = "extra#0.10-pre";
-extern mod sync;
+extern crate extra = "extra#0.10-pre";
+extern crate sync;
 
 use std::cast;
 use std::comm::{Port, Chan};
