@@ -21,7 +21,7 @@
 #[feature(globs)];
 
 extern crate extra = "extra#0.10-pre";
-extern crate sync;
+extern crate sync; // what
 
 use std::cast;
 use std::comm::{Port, Chan};
