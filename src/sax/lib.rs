@@ -28,6 +28,7 @@ use std::comm::{Port, Chan};
 use std::libc::{c_char, c_int};
 use std::str;
 use std::io::{File, IoResult};
+use std::fmt;
 // use std::task;
 
 use error::ErrorData;
@@ -55,16 +56,16 @@ pub enum ParseEvent {
     CdataBlock(~str),
 }
 
-impl ToStr for ParseEvent {
-    fn to_str(&self) -> ~str {
+impl fmt::Show for ParseEvent {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            StartDocument => ~"START DOCUMENT",
-            EndDocument => ~"END DOCUMENT",
-            StartElement(ref name, ref atts) => format!("<{}{}>", *name, atts.to_str()),
-            EndElement(ref name) => format!("</{}>", *name),
-            Characters(ref ch) => ch.clone(),
-            Comment(ref value) => format!("<!--{}-->", *value),
-            CdataBlock(ref value) => format!("<![CDATA[{}]]>", *value),
+            StartDocument => write!(fmt.buf, "START DOCUMENT"),
+            EndDocument => write!(fmt.buf, "END DOCUMENT"),
+            StartElement(ref name, ref atts) => write!(fmt.buf, "<{}{}>", *name, atts),
+            EndElement(ref name) => write!(fmt.buf, "</{}>", *name),
+            Characters(ref ch) => write!(fmt.buf, "{}", ch.clone()),
+            Comment(ref value) => write!(fmt.buf, "<!--{}-->", *value),
+            CdataBlock(ref value) => write!(fmt.buf, "<![CDATA[{}]]>", *value),
         }
     }
 }
@@ -80,7 +81,7 @@ pub struct Attribute {
 pub struct Attributes(~[Attribute]);
 
 impl Attributes {
-    unsafe fn from_buf(atts: **ffi::xmlChar) -> Attributes {
+    unsafe fn from_buf(atts: **ffi::XmlChar) -> Attributes {
         let mut ret = ~[];
         let mut ptr = atts as **c_char;
         while !ptr.is_null() && !(*ptr).is_null() {
@@ -115,12 +116,12 @@ impl Attributes {
     }
 }
 
-impl ToStr for Attributes {
-    fn to_str(&self) -> ~str {
+impl fmt::Show for Attributes {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let Attributes(ref s) = *self;
-        s.iter().map(|att| {
-            format!(" {}=\"{}\"", att.name, att.value)
-        }).to_owned_vec().concat()
+        write!(fmt.buf, "{}", s.iter().map(|att| {
+                                  format!(" {}=\"{}\"", att.name, att.value)
+                              }).to_owned_vec().concat())
     }
 }
 

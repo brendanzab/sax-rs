@@ -15,12 +15,13 @@
 
 //! Error handling
 
+use std::fmt;
 use std::str::raw::from_c_str;
 
 use super::ffi;
 
 /// The severity of the error
-#[deriving(Clone, Eq)]
+#[deriving(Clone, Eq, Show)]
 pub enum ErrorLevel {
     /// A simple warning
     Warning,
@@ -31,22 +32,12 @@ pub enum ErrorLevel {
 }
 
 impl ErrorLevel {
-    fn from_constant(value: ffi::xmlErrorLevel) -> Option<ErrorLevel> {
+    fn from_constant(value: ffi::XmlErrorLevel) -> Option<ErrorLevel> {
         match value {
             ffi::XML_ERR_WARNING => Some(Warning),
             ffi::XML_ERR_ERROR   => Some(Error),
             ffi::XML_ERR_FATAL   => Some(Fatal),
             _                    => None,
-        }
-    }
-}
-
-impl ToStr for ErrorLevel {
-    fn to_str(&self) -> ~str {
-        match *self {
-            Warning => ~"Warning",
-            Error   => ~"Error",
-            Fatal   => ~"Fatal",
         }
     }
 }
@@ -61,7 +52,7 @@ pub struct ErrorData {
 }
 
 impl ErrorData {
-    pub unsafe fn from_ptr(error: *ffi::xmlError) -> Option<ErrorData> {
+    pub unsafe fn from_ptr(error: *ffi::XmlError) -> Option<ErrorData> {
         ErrorLevel::from_constant((*error).level).map(|level| {
             ErrorData {
                 level:      level,
@@ -73,12 +64,12 @@ impl ErrorData {
     }
 }
 
-impl ToStr for ErrorData {
-    fn to_str(&self) -> ~str {
-        format!("{}:{} {}: {}",
-                self.line,
-                self.column,
-                self.level.to_str(),
-                self.message)
+impl fmt::Show for ErrorData {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        write!(fmt.buf, "{}:{} {}: {}",
+               self.line,
+               self.column,
+               self.level,
+               self.message)
     }
 }
