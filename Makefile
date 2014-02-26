@@ -45,6 +45,7 @@ doc:
 	$(RUSTDOC) -o $(DOC_DIR) $(LIB_FILE)
 
 install: lib
+	@mkdir -p $(LIB_INSTALL_DIR)
 	@ $(foreach crate, $(CRATE_FILES), \
 		cp $(LIB_DIR)/$(crate) $(LIB_INSTALL_DIR)/$(crate) && \
 		echo "Installed $(crate) to $(LIB_INSTALL_DIR)" ; \
