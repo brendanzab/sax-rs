@@ -32,7 +32,7 @@ pub enum ErrorLevel {
 }
 
 impl ErrorLevel {
-    fn from_constant(value: ffi::XmlErrorLevel) -> Option<ErrorLevel> {
+    fn from_constant(value: ffi::xmlErrorLevel) -> Option<ErrorLevel> {
         match value {
             ffi::XML_ERR_WARNING => Some(Warning),
             ffi::XML_ERR_ERROR   => Some(Error),
@@ -52,7 +52,7 @@ pub struct ErrorData {
 }
 
 impl ErrorData {
-    pub unsafe fn from_ptr(error: *ffi::XmlError) -> Option<ErrorData> {
+    pub unsafe fn from_ptr(error: *ffi::xmlError) -> Option<ErrorData> {
         ErrorLevel::from_constant((*error).level).map(|level| {
             ErrorData {
                 level:      level,
