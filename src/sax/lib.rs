@@ -29,7 +29,6 @@ use std::str;
 use std::io::{File, IoResult};
 use std::fmt;
 use std::vec_ng::Vec;
-// use std::task;
 
 use error::ErrorData;
 
@@ -163,13 +162,11 @@ pub fn parse_str(src: &str) -> Receiver<ParseResult> {
     let len = src.len() as c_int;
     src.to_c_str().with_ref(|c_str| {
         let (sender, receiver) = channel();
-        // do task::spawn {
-            unsafe {
-                ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
-                                           cast::transmute(&sender),
-                                           c_str, len);
-            }
-        // }
+        unsafe {
+            ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
+                                       cast::transmute(&sender),
+                                       c_str, len);
+        }
         receiver
     })
 }
