@@ -28,7 +28,7 @@ use std::libc::{c_char, c_int};
 use std::str;
 use std::io::{File, IoResult};
 use std::fmt;
-// use std::task;
+use std::vec_ng::Vec;
 
 use error::ErrorData;
 
@@ -77,11 +77,11 @@ pub struct Attribute {
 
 /// A list of attributes
 #[deriving(Eq, Clone)]
-pub struct Attributes(~[Attribute]);
+pub struct Attributes(Vec<Attribute>);
 
 impl Attributes {
     unsafe fn from_buf(atts: **ffi::xmlChar) -> Attributes {
-        let mut ret = ~[];
+        let mut ret = Vec::new();
         let mut ptr = atts as **c_char;
         while !ptr.is_null() && !(*ptr).is_null() {
             ret.push(
@@ -118,9 +118,10 @@ impl Attributes {
 impl fmt::Show for Attributes {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let Attributes(ref s) = *self;
-        write!(fmt.buf, "{}", s.iter().map(|att| {
-                                  format!(" {}=\"{}\"", att.name, att.value)
-                              }).to_owned_vec().concat())
+        for att in s.iter() {
+            try!(write!(fmt.buf, " {}=\"{}\"", att.name, att.value));
+        }
+        Ok(())
     }
 }
 
@@ -161,13 +162,11 @@ pub fn parse_str(src: &str) -> Receiver<ParseResult> {
     let len = src.len() as c_int;
     src.to_c_str().with_ref(|c_str| {
         let (sender, receiver) = channel();
-        // do task::spawn {
-            unsafe {
-                ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
-                                           cast::transmute(&sender),
-                                           c_str, len);
-            }
-        // }
+        unsafe {
+            ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
+                                       cast::transmute(&sender),
+                                       c_str, len);
+        }
         receiver
     })
 }
@@ -184,14 +183,15 @@ pub fn parse_file(path: &Path) -> IoResult<Receiver<ParseResult> > {
 
 #[cfg(test)]
 mod tests {
+    use std::vec_ng::Vec;
     use super::*;
 
     fn get_mock_atts() -> Attributes {
-        Attributes(~[
+        Attributes(Vec::from_slice([
             Attribute { name: ~"foo", value: ~"0" },
             Attribute { name: ~"bar", value: ~"1" },
             Attribute { name: ~"baz", value: ~"2" }
-        ])
+        ]))
     }
 
     #[test]
