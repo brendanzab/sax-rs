@@ -20,11 +20,10 @@
 
 #[feature(globs)];
 
-extern crate extra = "extra#0.10-pre";
-extern crate sync; // what
+extern crate sync;
 
 use std::cast;
-use std::comm::{Port, Chan};
+use std::comm::{Receiver, channel};
 use std::libc::{c_char, c_int};
 use std::str;
 use std::io::{File, IoResult};
@@ -132,7 +131,7 @@ pub type ParseResult = Result<ParseEvent, ErrorData>;
 ///
 /// # Returns
 ///
-/// A port that recieves parse results.
+/// A receiver that recieves parse results.
 ///
 /// # Example
 ///
@@ -148,7 +147,7 @@ pub type ParseResult = Result<ParseEvent, ErrorData>;
 /// }
 /// ~~~
 #[inline(never)]
-pub fn parse_str(src: &str) -> Port<ParseResult> {
+pub fn parse_str(src: &str) -> Receiver<ParseResult> {
     // ensure that the xml library is ready for use
     use sync::one::{Once, ONCE_INIT};
     static mut INIT: Once = ONCE_INIT;
@@ -161,19 +160,19 @@ pub fn parse_str(src: &str) -> Port<ParseResult> {
 
     let len = src.len() as c_int;
     src.to_c_str().with_ref(|c_str| {
-        let (port, chan) = Chan::new();
+        let (sender, receiver) = channel();
         // do task::spawn {
             unsafe {
                 ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
-                                           cast::transmute(&chan),
+                                           cast::transmute(&sender),
                                            c_str, len);
             }
         // }
-        port
+        receiver
     })
 }
 
-pub fn parse_file(path: &Path) -> IoResult< Port<ParseResult> > {
+pub fn parse_file(path: &Path) -> IoResult<Receiver<ParseResult> > {
   File::open(path)
     .and_then( |mut file| {
       file.read_to_str()
