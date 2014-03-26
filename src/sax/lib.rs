@@ -28,7 +28,6 @@ use std::libc::{c_char, c_int};
 use std::str;
 use std::io::{File, IoResult};
 use std::fmt;
-use std::vec_ng::Vec;
 
 use error::ErrorData;
 
