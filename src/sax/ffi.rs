@@ -16,7 +16,7 @@
 //! Foreign Function bindings for `libxml2`. These definitions can be found in
 //! the `libxml/parser.h` header file.
 
-#[allow(non_camel_case_types)];
+#![allow(non_camel_case_types)]
 
 use std::libc::*;
 
