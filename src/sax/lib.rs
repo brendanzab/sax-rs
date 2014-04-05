@@ -182,7 +182,6 @@ pub fn parse_file(path: &Path) -> IoResult<Receiver<ParseResult> > {
 
 #[cfg(test)]
 mod tests {
-    use std::vec_ng::Vec;
     use super::*;
 
     fn get_mock_atts() -> Attributes {

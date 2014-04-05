@@ -57,38 +57,38 @@ pub type endElementNsSAX2Func           = extern "C" fn(ctx: *c_void, localname:
 pub type xmlStructuredErrorFunc         = extern "C" fn(userData: *c_void, error: xmlErrorPtr);
 
 pub struct xmlSAXHandler {
-    internalSubset:         Option<internalSubsetSAXFunc>,
-    isStandalone:           Option<isStandaloneSAXFunc>,
-    hasInternalSubset:      Option<hasInternalSubsetSAXFunc>,
-    hasExternalSubset:      Option<hasExternalSubsetSAXFunc>,
-    resolveEntity:          Option<resolveEntitySAXFunc>,
-    getEntity:              Option<getEntitySAXFunc>,
-    entityDecl:             Option<entityDeclSAXFunc>,
-    notationDecl:           Option<notationDeclSAXFunc>,
-    attributeDecl:          Option<attributeDeclSAXFunc>,
-    elementDecl:            Option<elementDeclSAXFunc>,
-    unparsedEntityDecl:     Option<unparsedEntityDeclSAXFunc>,
-    setDocumentLocator:     Option<setDocumentLocatorSAXFunc>,
-    startDocument:          Option<startDocumentSAXFunc>,
-    endDocument:            Option<endDocumentSAXFunc>,
-    startElement:           Option<startElementSAXFunc>,
-    endElement:             Option<endElementSAXFunc>,
-    reference:              Option<referenceSAXFunc>,
-    characters:             Option<charactersSAXFunc>,
-    ignorableWhitespace:    Option<ignorableWhitespaceSAXFunc>,
-    processingInstruction:  Option<processingInstructionSAXFunc>,
-    comment:                Option<commentSAXFunc>,
-    warning:                Option<warningSAXFunc>,
-    error:                  Option<errorSAXFunc>,
-    fatalError:             Option<fatalErrorSAXFunc>,
-    getParameterEntity:     Option<getParameterEntitySAXFunc>,
-    cdataBlock:             Option<cdataBlockSAXFunc>,
-    externalSubset:         Option<externalSubsetSAXFunc>,
-    initialized:            c_uint,
-    _private:               *c_void,
-    startElementNs:         Option<startElementNsSAX2Func>,
-    endElementNs:           Option<endElementNsSAX2Func>,
-    serror:                 Option<xmlStructuredErrorFunc>,
+    pub internalSubset:         Option<internalSubsetSAXFunc>,
+    pub isStandalone:           Option<isStandaloneSAXFunc>,
+    pub hasInternalSubset:      Option<hasInternalSubsetSAXFunc>,
+    pub hasExternalSubset:      Option<hasExternalSubsetSAXFunc>,
+    pub resolveEntity:          Option<resolveEntitySAXFunc>,
+    pub getEntity:              Option<getEntitySAXFunc>,
+    pub entityDecl:             Option<entityDeclSAXFunc>,
+    pub notationDecl:           Option<notationDeclSAXFunc>,
+    pub attributeDecl:          Option<attributeDeclSAXFunc>,
+    pub elementDecl:            Option<elementDeclSAXFunc>,
+    pub unparsedEntityDecl:     Option<unparsedEntityDeclSAXFunc>,
+    pub setDocumentLocator:     Option<setDocumentLocatorSAXFunc>,
+    pub startDocument:          Option<startDocumentSAXFunc>,
+    pub endDocument:            Option<endDocumentSAXFunc>,
+    pub startElement:           Option<startElementSAXFunc>,
+    pub endElement:             Option<endElementSAXFunc>,
+    pub reference:              Option<referenceSAXFunc>,
+    pub characters:             Option<charactersSAXFunc>,
+    pub ignorableWhitespace:    Option<ignorableWhitespaceSAXFunc>,
+    pub processingInstruction:  Option<processingInstructionSAXFunc>,
+    pub comment:                Option<commentSAXFunc>,
+    pub warning:                Option<warningSAXFunc>,
+    pub error:                  Option<errorSAXFunc>,
+    pub fatalError:             Option<fatalErrorSAXFunc>,
+    pub getParameterEntity:     Option<getParameterEntitySAXFunc>,
+    pub cdataBlock:             Option<cdataBlockSAXFunc>,
+    pub externalSubset:         Option<externalSubsetSAXFunc>,
+    pub initialized:            c_uint,
+    pub _private:               *c_void,
+    pub startElementNs:         Option<startElementNsSAX2Func>,
+    pub endElementNs:           Option<endElementNsSAX2Func>,
+    pub serror:                 Option<xmlStructuredErrorFunc>,
 }
 
 /// Error level type alias
@@ -105,31 +105,31 @@ pub static XML_ERR_FATAL:   xmlErrorLevel = 3;
 
 pub struct xmlError {
     /// What part of the library raised this error
-    domain: c_int,
+    pub domain: c_int,
     /// The error code, e.g. an xmlParserError
-    code: c_int,
+    pub code: c_int,
     /// human-readable informative error messag
-    message: *c_char,
+    pub message: *c_char,
     /// how consequent is the error
-    level: xmlErrorLevel,
+    pub level: xmlErrorLevel,
     /// the filename
-    file: *c_char,
+    pub file: *c_char,
     /// the line number if available
-    line: c_int,
+    pub line: c_int,
     /// extra string information
-    str1: *c_char,
+    pub str1: *c_char,
     /// extra string information
-    str2: *c_char,
+    pub str2: *c_char,
     /// extra string information
-    str3: *c_char,
+    pub str3: *c_char,
     /// extra number information
-    int1: c_int,
+    pub int1: c_int,
     /// column number of the error or 0 if N/A
-    int2: c_int,
+    pub int2: c_int,
     /// the parser context if available
-    ctxt: *c_void,
+    pub ctxt: *c_void,
     /// the node in the tree
-    node: *c_void,
+    pub node: *c_void,
 }
 
 pub type xmlErrorPtr = *xmlError;
