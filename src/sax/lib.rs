@@ -97,9 +97,8 @@ impl Attributes {
 
     pub fn find<'a>(&'a self, name: &str) -> Option<&'a str> {
         let Attributes(ref s) = *self;
-        s.iter()
-         .find(|att| name == att.name)
-         .map(|att| att.value.as_slice())
+        s.iter().find(|att| name == att.name)
+                .map(|att| att.value.as_slice())
     }
 
     pub fn get<'a>(&'a self, name: &str) -> &'a str {
@@ -171,14 +170,9 @@ pub fn parse_str(src: &str) -> Receiver<ParseResult> {
     })
 }
 
-pub fn parse_file(path: &Path) -> IoResult<Receiver<ParseResult> > {
-  File::open(path)
-    .and_then( |mut file| {
-      file.read_to_str()
-    })
-    .and_then( |contents| {
-      Ok(parse_str(contents))
-    })
+pub fn parse_file(path: &Path) -> IoResult<Receiver<ParseResult>> {
+    File::open(path).and_then(|mut file| file.read_to_str())
+                    .and_then(|contents| Ok(parse_str(contents)))
 }
 
 #[cfg(test)]
