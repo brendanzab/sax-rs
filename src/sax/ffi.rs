@@ -18,7 +18,7 @@
 
 #![allow(non_camel_case_types)]
 
-use std::libc::*;
+use libc::{c_char, c_int, c_uchar, c_uint, c_void};
 
 pub type xmlChar = c_uchar;
 
