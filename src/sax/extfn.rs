@@ -15,7 +15,7 @@
 
 //! External callback definitions
 
-use libc::{c_char, c_int, c_void};
+use std::libc::{c_char, c_int, c_void};
 use std::cast::transmute;
 use std::comm::Sender;
 use std::ptr::null;

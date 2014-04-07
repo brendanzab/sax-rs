@@ -20,10 +20,9 @@
 
 #![feature(globs)]
 
-extern crate libc;
 extern crate sync;
 
-use libc::{c_char, c_int};
+use std::libc::{c_char, c_int};
 use std::cast;
 use std::comm::{Receiver, channel};
 use std::str;
