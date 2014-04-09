@@ -28,12 +28,6 @@ make
 make check
 ~~~
 
-## Install
-
-~~~
-make install
-~~~
-
 ## Todo
 
 - Messages for start/end element namespace callbacks
