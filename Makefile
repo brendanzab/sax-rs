@@ -26,9 +26,6 @@ CRATE_FILES         = $(shell $(RUSTC) --crate-file-name $(LIB_FILE))
 DOC_DIR             = doc
 LIB_DIR             = lib
 
-INSTALL_PREFIX      = /usr/local
-LIB_INSTALL_DIR     = $(INSTALL_PREFIX)/lib
-
 all: lib doc
 
 lib:
@@ -44,16 +41,6 @@ doc:
 	mkdir -p $(DOC_DIR)
 	$(RUSTDOC) -o $(DOC_DIR) $(LIB_FILE)
 
-install: lib
-	@mkdir -p $(LIB_INSTALL_DIR)
-	@ $(foreach crate, $(CRATE_FILES), \
-		cp $(LIB_DIR)/$(crate) $(LIB_INSTALL_DIR)/$(crate) && \
-		echo "Installed $(crate) to $(LIB_INSTALL_DIR)" ; \
-	)
-
-uninstall:
-	@-rm $(LIB_INSTALL_DIR)/lib$(CRATE_NAME)-*.rlib ||:
-
 clean:
 	rm -rf $(LIB_DIR)
 	rm -rf $(TEST_DIR)
@@ -64,6 +51,4 @@ clean:
 	lib \
 	check \
 	doc \
-	install \
-	uninstall \
 	clean
