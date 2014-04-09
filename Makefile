@@ -19,14 +19,16 @@ RUSTDOC             = rustdoc
 SRC_DIR             = src
 TEST_DIR            = test
 LIB_FILE            = $(SRC_DIR)/sax/lib.rs
+EXAMPLE_FILES       = $(SRC_DIR)/examples/*.rs
 
 CRATE_NAME          = $(shell $(RUSTC) --crate-name $(LIB_FILE))
 CRATE_FILES         = $(shell $(RUSTC) --crate-file-name $(LIB_FILE))
 
 DOC_DIR             = doc
+EXAMPLES_DIR        = examples
 LIB_DIR             = lib
 
-all: lib doc
+all: lib examples doc
 
 lib:
 	mkdir -p $(LIB_DIR)
@@ -41,9 +43,18 @@ doc:
 	mkdir -p $(DOC_DIR)
 	$(RUSTDOC) -o $(DOC_DIR) $(LIB_FILE)
 
+examples-dir:
+	mkdir -p $(EXAMPLES_DIR)
+
+$(EXAMPLE_FILES): lib examples-dir
+	$(RUSTC) -L $(LIB_DIR) --out-dir=$(EXAMPLES_DIR) $@
+
+examples: $(EXAMPLE_FILES)
+
 clean:
 	rm -rf $(LIB_DIR)
 	rm -rf $(TEST_DIR)
+	rm -rf $(EXAMPLES_DIR)
 	rm -rf $(DOC_DIR)
 
 .PHONY: \
@@ -51,4 +62,7 @@ clean:
 	lib \
 	check \
 	doc \
+	examples \
+	examples-dir \
+	$(EXAMPLE_FILES) \
 	clean
