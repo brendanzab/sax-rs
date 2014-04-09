@@ -5,16 +5,20 @@ Wrapper for libxml2's SAX parser.
 ## A simple example
 
 ~~~rust
-let parser = parse_str("<yo>hullo!</yo>");
+let parser = sax::parse_str(XML_DATA);
 for result in parser.iter() {
     match result {
-        Ok(StartDocument) => (),
-        Ok(EndDocument) => break,
-        Ok(event) => println!("{}", event.to_str()),
-        Err(err) => println!("{}", err.to_str()),
+        Ok(sax::StartDocument) => (),
+        Ok(sax::EndDocument) => break,
+        Ok(event) => println!("{}", event),
+        Err(err) => println!("{}", err),
     }
 }
 ~~~
+
+## Documentation
+
+The [API docs](http://rust-ci.org/bjz/sax-rs/doc/sax/) are hosted on Rust CI.
 
 ## Compile
 
@@ -26,12 +30,6 @@ make
 
 ~~~
 make check
-~~~
-
-## Install
-
-~~~
-make install
 ~~~
 
 ## Todo
