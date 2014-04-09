@@ -16,6 +16,10 @@ for result in parser.iter() {
 }
 ~~~
 
+## Documentation
+
+The [API docs](http://rust-ci.org/bjz/sax-rs/doc/sax/) are hosted on Rust CI.
+
 ## Compile
 
 ~~~
