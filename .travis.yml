@@ -24,8 +24,6 @@ install:
   - sudo apt-get install rust-nightly
 script:
   - make
-  - sudo make install
-  - sudo make uninstall
   - make clean
   - make doc
 after_script:
