@@ -15,7 +15,7 @@
 
 extern crate sax;
 
-static XML_DATA: &'static str = &'static "<hello><woot /><a foo=\"bar\">test</a></hello>";
+static XML_DATA: &'static str = "<hello><woot /><a foo=\"bar\">test</a></hello>";
 
 fn main() {
     let parser = sax::parse_str(XML_DATA);
