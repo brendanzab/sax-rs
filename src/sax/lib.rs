@@ -24,7 +24,7 @@ extern crate libc;
 extern crate sync;
 
 use libc::{c_char, c_int};
-use std::cast;
+use std::mem;
 use std::comm::{Receiver, channel};
 use std::str;
 use std::io::{File, IoResult};
@@ -163,7 +163,7 @@ pub fn parse_str(src: &str) -> Receiver<ParseResult> {
         let (sender, receiver) = channel();
         unsafe {
             ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
-                                       cast::transmute(&sender),
+                                       mem::transmute(&sender),
                                        c_str, len);
         }
         receiver
