@@ -58,13 +58,13 @@ pub enum ParseEvent {
 impl fmt::Show for ParseEvent {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            StartDocument => write!(fmt.buf, "START DOCUMENT"),
-            EndDocument => write!(fmt.buf, "END DOCUMENT"),
-            StartElement(ref name, ref atts) => write!(fmt.buf, "<{}{}>", *name, atts),
-            EndElement(ref name) => write!(fmt.buf, "</{}>", *name),
-            Characters(ref ch) => write!(fmt.buf, "{}", ch.clone()),
-            Comment(ref value) => write!(fmt.buf, "<!--{}-->", *value),
-            CdataBlock(ref value) => write!(fmt.buf, "<![CDATA[{}]]>", *value),
+            StartDocument => write!(fmt, "START DOCUMENT"),
+            EndDocument => write!(fmt, "END DOCUMENT"),
+            StartElement(ref name, ref atts) => write!(fmt, "<{}{}>", *name, atts),
+            EndElement(ref name) => write!(fmt, "</{}>", *name),
+            Characters(ref ch) => write!(fmt, "{}", ch.clone()),
+            Comment(ref value) => write!(fmt, "<!--{}-->", *value),
+            CdataBlock(ref value) => write!(fmt, "<![CDATA[{}]]>", *value),
         }
     }
 }
@@ -118,7 +118,7 @@ impl fmt::Show for Attributes {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
         let Attributes(ref s) = *self;
         for att in s.iter() {
-            try!(write!(fmt.buf, " {}=\"{}\"", att.name, att.value));
+            try!(write!(fmt, " {}=\"{}\"", att.name, att.value));
         }
         Ok(())
     }

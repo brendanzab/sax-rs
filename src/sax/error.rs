@@ -66,7 +66,7 @@ impl ErrorData {
 
 impl fmt::Show for ErrorData {
     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
-        write!(fmt.buf, "{}:{} {}: {}",
+        write!(fmt, "{}:{} {}: {}",
                self.line,
                self.column,
                self.level,
