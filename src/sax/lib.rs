@@ -44,15 +44,15 @@ pub enum ParseEvent {
     /// The document processing has finished.
     EndDocument,
     /// An opening tag has was parsed.
-    StartElement(~str, Attributes),
+    StartElement(StrBuf, Attributes),
     /// A closing tag was parsed.
-    EndElement(~str),
+    EndElement(StrBuf),
     /// Some characters between tags have been recived.
-    Characters(~str),
+    Characters(StrBuf),
     /// A comment tag was parsed.
-    Comment(~str),
+    Comment(StrBuf),
     /// A `CDATA` block was parsed.
-    CdataBlock(~str),
+    CdataBlock(StrBuf),
 }
 
 impl fmt::Show for ParseEvent {
@@ -71,8 +71,8 @@ impl fmt::Show for ParseEvent {
 
 #[deriving(Eq, Clone)]
 pub struct Attribute {
-    name: ~str,
-    value: ~str,
+    name: StrBuf,
+    value: StrBuf,
 }
 
 /// A list of attributes
@@ -86,8 +86,8 @@ impl Attributes {
         while !ptr.is_null() && !(*ptr).is_null() {
             ret.push(
                 Attribute {
-                    name: str::raw::from_c_str(*ptr),
-                    value: str::raw::from_c_str(*ptr.offset(1)),
+                    name: str::raw::from_c_str(*ptr).to_strbuf(),
+                    value: str::raw::from_c_str(*ptr.offset(1)).to_strbuf(),
                 }
             );
             ptr = ptr.offset(2);
@@ -97,7 +97,7 @@ impl Attributes {
 
     pub fn find<'a>(&'a self, name: &str) -> Option<&'a str> {
         let Attributes(ref s) = *self;
-        s.iter().find(|att| name == att.name)
+        s.iter().find(|att| name == att.name.as_slice())
                 .map(|att| att.value.as_slice())
     }
 
@@ -105,12 +105,12 @@ impl Attributes {
         self.find(name).expect(format!("Could not find an attribute with the name \"{}\"", name))
     }
 
-    pub fn find_clone(&self, name: &str) -> Option<~str> {
-        self.find(name).map(|v| v.to_owned())
+    pub fn find_clone(&self, name: &str) -> Option<StrBuf> {
+        self.find(name).map(|v| v.to_strbuf())
     }
 
-    pub fn get_clone(&self, name: &str) -> ~str {
-        self.get(name).to_owned()
+    pub fn get_clone(&self, name: &str) -> StrBuf {
+        self.get(name).to_strbuf()
     }
 }
 

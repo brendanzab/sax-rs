@@ -48,7 +48,7 @@ pub struct ErrorData {
     level: ErrorLevel,
     line: uint,
     column: uint,
-    message: ~str,
+    message: StrBuf,
 }
 
 impl ErrorData {
@@ -56,7 +56,7 @@ impl ErrorData {
         ErrorLevel::from_constant((*error).level).map(|level| {
             ErrorData {
                 level:      level,
-                message:    from_c_str((*error).message),
+                message:    from_c_str((*error).message).to_strbuf(),
                 line:       (*error).line as uint,
                 column:     (*error).int2 as uint,
             }
