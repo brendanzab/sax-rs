@@ -172,7 +172,7 @@ pub fn parse_str(src: &str) -> Receiver<ParseResult> {
 
 pub fn parse_file(path: &Path) -> IoResult<Receiver<ParseResult>> {
     File::open(path).and_then(|mut file| file.read_to_str())
-                    .and_then(|contents| Ok(parse_str(contents)))
+                    .and_then(|contents| Ok(parse_str(contents.as_slice())))
 }
 
 #[cfg(test)]
