@@ -44,15 +44,15 @@ pub enum ParseEvent {
     /// The document processing has finished.
     EndDocument,
     /// An opening tag has was parsed.
-    StartElement(StrBuf, Attributes),
+    StartElement(String, Attributes),
     /// A closing tag was parsed.
-    EndElement(StrBuf),
+    EndElement(String),
     /// Some characters between tags have been recived.
-    Characters(StrBuf),
+    Characters(String),
     /// A comment tag was parsed.
-    Comment(StrBuf),
+    Comment(String),
     /// A `CDATA` block was parsed.
-    CdataBlock(StrBuf),
+    CdataBlock(String),
 }
 
 impl fmt::Show for ParseEvent {
@@ -71,8 +71,8 @@ impl fmt::Show for ParseEvent {
 
 #[deriving(Eq, Clone)]
 pub struct Attribute {
-    name: StrBuf,
-    value: StrBuf,
+    name: String,
+    value: String,
 }
 
 /// A list of attributes
@@ -105,11 +105,11 @@ impl Attributes {
         self.find(name).expect(format!("Could not find an attribute with the name \"{}\"", name))
     }
 
-    pub fn find_clone(&self, name: &str) -> Option<StrBuf> {
+    pub fn find_clone(&self, name: &str) -> Option<String> {
         self.find(name).map(|v| v.to_strbuf())
     }
 
-    pub fn get_clone(&self, name: &str) -> StrBuf {
+    pub fn get_clone(&self, name: &str) -> String {
         self.get(name).to_strbuf()
     }
 }
