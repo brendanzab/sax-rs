@@ -48,7 +48,7 @@ pub struct ErrorData {
     level: ErrorLevel,
     line: uint,
     column: uint,
-    message: StrBuf,
+    message: String,
 }
 
 impl ErrorData {
