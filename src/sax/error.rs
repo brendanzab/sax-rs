@@ -56,7 +56,7 @@ impl ErrorData {
         ErrorLevel::from_constant((*error).level).map(|level| {
             ErrorData {
                 level:      level,
-                message:    from_c_str((*error).message).to_strbuf(),
+                message:    from_c_str((*error).message).to_string(),
                 line:       (*error).line as uint,
                 column:     (*error).int2 as uint,
             }
