@@ -21,7 +21,7 @@ use std::str::raw::from_c_str;
 use super::ffi;
 
 /// The severity of the error
-#[deriving(Clone, Eq, Show)]
+#[deriving(Clone, PartialEq, Show)]
 pub enum ErrorLevel {
     /// A simple warning
     Warning,
@@ -43,7 +43,7 @@ impl ErrorLevel {
 }
 
 /// An XML parse error
-#[deriving(Clone, Eq)]
+#[deriving(Clone, PartialEq)]
 pub struct ErrorData {
     level: ErrorLevel,
     line: uint,
