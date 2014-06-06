@@ -102,7 +102,7 @@ impl Attributes {
     }
 
     pub fn get<'a>(&'a self, name: &str) -> &'a str {
-        self.find(name).expect(format!("Could not find an attribute with the name \"{}\"", name))
+        self.find(name).expect(format!("Could not find an attribute with the name \"{}\"", name).as_slice())
     }
 
     pub fn find_clone(&self, name: &str) -> Option<String> {
