@@ -37,7 +37,7 @@ pub mod ffi;
 mod extfn;
 
 /// Events to be sent by the parser.
-#[deriving(Eq, Clone)]
+#[deriving(PartialEq, Clone)]
 pub enum ParseEvent {
     /// The document has begun to be processed.
     StartDocument,
@@ -69,14 +69,14 @@ impl fmt::Show for ParseEvent {
     }
 }
 
-#[deriving(Eq, Clone)]
+#[deriving(PartialEq, Clone)]
 pub struct Attribute {
     name: String,
     value: String,
 }
 
 /// A list of attributes
-#[deriving(Eq, Clone)]
+#[deriving(PartialEq, Clone)]
 pub struct Attributes(Vec<Attribute>);
 
 impl Attributes {
