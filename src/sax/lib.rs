@@ -86,8 +86,8 @@ impl Attributes {
         while !ptr.is_null() && !(*ptr).is_null() {
             ret.push(
                 Attribute {
-                    name: str::raw::from_c_str(*ptr).to_string(),
-                    value: str::raw::from_c_str(*ptr.offset(1)).to_string(),
+                    name: str::raw::from_c_str(*ptr),
+                    value: str::raw::from_c_str(*ptr.offset(1)),
                 }
             );
             ptr = ptr.offset(2);
@@ -106,11 +106,11 @@ impl Attributes {
     }
 
     pub fn find_clone(&self, name: &str) -> Option<String> {
-        self.find(name).map(|v| v.to_string())
+        self.find(name).map(|v| v.to_str())
     }
 
     pub fn get_clone(&self, name: &str) -> String {
-        self.get(name).to_string()
+        self.get(name).to_str()
     }
 }
 

@@ -82,7 +82,7 @@ extern "C" fn end_document(ctx: *c_void) {
 extern "C" fn start_element(ctx: *c_void, name: *ffi::xmlChar, atts: **ffi::xmlChar) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(StartElement(from_c_str(name as *c_char).to_string(), Attributes::from_buf(atts)))
+            Ok(StartElement(from_c_str(name as *c_char), Attributes::from_buf(atts)))
         );
     }
 }
@@ -90,7 +90,7 @@ extern "C" fn start_element(ctx: *c_void, name: *ffi::xmlChar, atts: **ffi::xmlC
 extern "C" fn end_element(ctx: *c_void, name: *ffi::xmlChar) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(EndElement(from_c_str(name as *c_char).to_string()))
+            Ok(EndElement(from_c_str(name as *c_char)))
         );
     }
 }
@@ -98,7 +98,7 @@ extern "C" fn end_element(ctx: *c_void, name: *ffi::xmlChar) {
 extern "C" fn characters(ctx: *c_void, ch: *ffi::xmlChar, len: c_int) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(Characters(from_buf_len(ch, len as uint).to_string()))
+            Ok(Characters(from_buf_len(ch, len as uint)))
         );
     }
 }
@@ -106,7 +106,7 @@ extern "C" fn characters(ctx: *c_void, ch: *ffi::xmlChar, len: c_int) {
 extern "C" fn comment(ctx: *c_void, value: *ffi::xmlChar) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(Comment(from_c_str(value as *c_char).to_string()))
+            Ok(Comment(from_c_str(value as *c_char)))
         );
     }
 }
@@ -114,7 +114,7 @@ extern "C" fn comment(ctx: *c_void, value: *ffi::xmlChar) {
 extern "C" fn cdata_block(ctx: *c_void, value: *ffi::xmlChar, len: c_int) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(CdataBlock(from_buf_len(value, len as uint).to_string()))
+            Ok(CdataBlock(from_buf_len(value, len as uint)))
         );
     }
 }
