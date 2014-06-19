@@ -1,3 +1,10 @@
+/bin/
+/doc/
+/examples/
+/lib/
+/test/
+
+# rust-empty
 .DS_Store
 *~
 *#
@@ -11,16 +18,8 @@
 *.dummy
 *.exe
 *-test
-/bin/main
-/bin/test-internal
-/bin/test-external
-/doc/
 /target/
 /build/
 /.rust/
 rusti.sh
-/examples/*
-!/examples/*.rs
-
-/bin/
-/lib/
+watch.sh
