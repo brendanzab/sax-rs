@@ -18,7 +18,7 @@ RUSTDOC             = rustdoc
 
 SRC_DIR             = src
 TEST_DIR            = test
-LIB_FILE            = $(SRC_DIR)/sax/lib.rs
+LIB_FILE            = $(SRC_DIR)/sax.rs
 EXAMPLE_FILES       = $(SRC_DIR)/examples/*.rs
 
 CRATE_NAME          = $(shell $(RUSTC) --crate-name $(LIB_FILE))
