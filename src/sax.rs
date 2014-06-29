@@ -80,9 +80,9 @@ pub struct Attribute {
 pub struct Attributes(Vec<Attribute>);
 
 impl Attributes {
-    unsafe fn from_buf(atts: **ffi::xmlChar) -> Attributes {
+    unsafe fn from_buf(atts: *const *const ffi::xmlChar) -> Attributes {
         let mut ret = Vec::new();
-        let mut ptr = atts as **c_char;
+        let mut ptr = atts as *const *const c_char;
         while !ptr.is_null() && !(*ptr).is_null() {
             ret.push(
                 Attribute {
