@@ -61,9 +61,9 @@ pub fn new_handler() -> ffi::xmlSAXHandler {
     }
 }
 
-unsafe fn sender_from_ptr(ctx: *c_void) -> &Sender<ParseResult> { transmute(ctx) }
+unsafe fn sender_from_ptr(ctx: *const c_void) -> &Sender<ParseResult> { transmute(ctx) }
 
-extern "C" fn start_document(ctx: *c_void) {
+extern "C" fn start_document(ctx: *const c_void) {
     unsafe {
         sender_from_ptr(ctx).send(
             Ok(StartDocument)
@@ -71,7 +71,7 @@ extern "C" fn start_document(ctx: *c_void) {
     }
 }
 
-extern "C" fn end_document(ctx: *c_void) {
+extern "C" fn end_document(ctx: *const c_void) {
     unsafe {
         sender_from_ptr(ctx).send(
             Ok(EndDocument)
@@ -79,23 +79,23 @@ extern "C" fn end_document(ctx: *c_void) {
     }
 }
 
-extern "C" fn start_element(ctx: *c_void, name: *ffi::xmlChar, atts: **ffi::xmlChar) {
+extern "C" fn start_element(ctx: *const c_void, name: *const ffi::xmlChar, atts: *const *const ffi::xmlChar) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(StartElement(from_c_str(name as *c_char), Attributes::from_buf(atts)))
+            Ok(StartElement(from_c_str(name as *const c_char), Attributes::from_buf(atts)))
         );
     }
 }
 
-extern "C" fn end_element(ctx: *c_void, name: *ffi::xmlChar) {
+extern "C" fn end_element(ctx: *const c_void, name: *const ffi::xmlChar) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(EndElement(from_c_str(name as *c_char)))
+            Ok(EndElement(from_c_str(name as *const c_char)))
         );
     }
 }
 
-extern "C" fn characters(ctx: *c_void, ch: *ffi::xmlChar, len: c_int) {
+extern "C" fn characters(ctx: *const c_void, ch: *const ffi::xmlChar, len: c_int) {
     unsafe {
         sender_from_ptr(ctx).send(
             Ok(Characters(from_buf_len(ch, len as uint)))
@@ -103,15 +103,15 @@ extern "C" fn characters(ctx: *c_void, ch: *ffi::xmlChar, len: c_int) {
     }
 }
 
-extern "C" fn comment(ctx: *c_void, value: *ffi::xmlChar) {
+extern "C" fn comment(ctx: *const c_void, value: *const ffi::xmlChar) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(Comment(from_c_str(value as *c_char)))
+            Ok(Comment(from_c_str(value as *const c_char)))
         );
     }
 }
 
-extern "C" fn cdata_block(ctx: *c_void, value: *ffi::xmlChar, len: c_int) {
+extern "C" fn cdata_block(ctx: *const c_void, value: *const ffi::xmlChar, len: c_int) {
     unsafe {
         sender_from_ptr(ctx).send(
             Ok(CdataBlock(from_buf_len(value, len as uint)))
@@ -119,7 +119,7 @@ extern "C" fn cdata_block(ctx: *c_void, value: *ffi::xmlChar, len: c_int) {
     }
 }
 
-extern "C" fn serror(ctx: *c_void, error: *ffi::xmlError) {
+extern "C" fn serror(ctx: *const c_void, error: *const ffi::xmlError) {
     unsafe {
         ErrorData::from_ptr(error).map(|err| {
             sender_from_ptr(ctx).send(Err(err.clone()));
