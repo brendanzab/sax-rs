@@ -14,7 +14,7 @@
 // limitations under the License.
 
 #![comment = "Wrapper for libxml2's SAX parser."]
-#![crate_id = "github.com/bjz/sax-rs#sax:0.1"]
+#![crate_name = "sax"]
 
 #![crate_type = "lib"]
 
@@ -159,15 +159,13 @@ pub fn parse_str(src: &str) -> Receiver<ParseResult> {
     }
 
     let len = src.len() as c_int;
-    src.to_c_str().with_ref(|c_str| {
-        let (sender, receiver) = channel();
-        unsafe {
-            ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
-                                       mem::transmute(&sender),
-                                       c_str, len);
-        }
-        receiver
-    })
+    let (sender, receiver) = channel();
+    unsafe {
+        ffi::xmlSAXUserParseMemory(&extfn::new_handler(),
+                                   mem::transmute(&sender),
+                                   src.to_c_str().as_ptr(), len);
+    }
+    receiver
 }
 
 pub fn parse_file(path: &Path) -> IoResult<Receiver<ParseResult>> {
