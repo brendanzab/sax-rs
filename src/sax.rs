@@ -181,9 +181,9 @@ mod tests {
 
     fn get_mock_atts() -> Attributes {
         Attributes(Vec::from_slice([
-            Attribute { name: box "foo", value: box "0" },
-            Attribute { name: box "bar", value: box "1" },
-            Attribute { name: box "baz", value: box "2" }
+            Attribute { name: "foo".to_string(), value: "0".to_string() },
+            Attribute { name: "bar".to_string(), value: "1".to_string() },
+            Attribute { name: "baz".to_string(), value: "2".to_string() }
         ]))
     }
 
