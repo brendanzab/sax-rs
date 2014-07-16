@@ -215,4 +215,43 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn test_traversal_elements() {
+        let sax = parse_str(
+            "<hello><this /><a foo=\"bar\">test</a></hello>"
+        );
+        let mut tags = Vec::new();
+        loop {
+            match sax.recv() {
+                Ok(EndDocument) => { break }
+                Ok(StartElement(name, _)) => { tags.push(name); }
+                Ok(EndElement(name)) => { tags.push(format!("/{:s}", name)); }
+                _ => { }
+            }
+        }
+        let t: Vec<&str> = tags.iter().map(|t| t.as_slice()).collect();
+        assert_eq!(t.as_slice(),
+                   &["hello", "this", "/this", "a", "/a", "/hello"]);
+    }
+
+    #[test]
+    fn test_traversal_elements_with_namespace() {
+        let sax = parse_str(
+            "<hello xmlns:test=\"http://www.test.org/test\">
+            <this /><test:a foo=\"bar\">test</test:a></hello>"
+        );
+        let mut tags = Vec::new();
+        loop {
+            match sax.recv() {
+                Ok(EndDocument) => { break }
+                Ok(StartElement(name, _)) => { tags.push(name); }
+                Ok(EndElement(name)) => { tags.push(format!("/{:s}", name)); }
+                _ => { }
+            }
+        }
+        let t: Vec<&str> = tags.iter().map(|t| t.as_slice()).collect();
+        assert_eq!(t.as_slice(),
+                   &["hello", "this", "/this", "test:a", "/test:a", "/hello"]);
+    }
 }
