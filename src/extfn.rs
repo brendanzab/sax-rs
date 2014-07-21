@@ -61,7 +61,8 @@ pub fn new_handler() -> ffi::xmlSAXHandler {
     }
 }
 
-unsafe fn sender_from_ptr(ctx: *const c_void) -> &Sender<ParseResult> { transmute(ctx) }
+// aaaaaahhh this is so unsafe!
+unsafe fn sender_from_ptr<'a>(ctx: *const c_void) -> &'a Sender<ParseResult> { transmute(ctx) }
 
 extern "C" fn start_document(ctx: *const c_void) {
     unsafe {
