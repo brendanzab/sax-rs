@@ -22,7 +22,7 @@ before_install:
 install:
   - wget http://static.rust-lang.org/dist/rust-nightly-x86_64-unknown-linux-gnu.tar.gz
   - tar xzf rust-nightly-x86_64-unknown-linux-gnu.tar.gz
-  - export PATH=$PATH:$(pwd)/rust-nightly-x86_64-unknown-linux-gnu/bin
+  - sudo ./rust-nightly-x86_64-unknown-linux-gnu/install.sh
   - rustc -v
   - sudo apt-get install libxml2 cargo
 script:
