@@ -16,7 +16,7 @@
 //! Error handling
 
 use std::fmt;
-use std::str::raw::from_c_str;
+use std::string;
 
 use super::ffi;
 
@@ -56,7 +56,7 @@ impl ErrorData {
         ErrorLevel::from_constant((*error).level).map(|level| {
             ErrorData {
                 level:      level,
-                message:    from_c_str((*error).message),
+                message:    string::raw::from_buf((*error).message as *const u8),
                 line:       (*error).line as uint,
                 column:     (*error).int2 as uint,
             }

@@ -15,11 +15,11 @@
 
 //! External callback definitions
 
-use libc::{c_char, c_int, c_void};
+use libc::{c_int, c_void};
 use std::mem::transmute;
 use std::comm::Sender;
 use std::ptr::null;
-use std::str::raw::{from_c_str, from_buf_len};
+use std::string;
 
 use super::*;
 use super::error::ErrorData;
@@ -83,7 +83,7 @@ extern "C" fn end_document(ctx: *const c_void) {
 extern "C" fn start_element(ctx: *const c_void, name: *const ffi::xmlChar, atts: *const *const ffi::xmlChar) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(StartElement(from_c_str(name as *const c_char), Attributes::from_buf(atts)))
+            Ok(StartElement(string::raw::from_buf(name as *const u8), Attributes::from_buf(atts)))
         );
     }
 }
@@ -91,7 +91,7 @@ extern "C" fn start_element(ctx: *const c_void, name: *const ffi::xmlChar, atts:
 extern "C" fn end_element(ctx: *const c_void, name: *const ffi::xmlChar) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(EndElement(from_c_str(name as *const c_char)))
+            Ok(EndElement(string::raw::from_buf(name as *const u8)))
         );
     }
 }
@@ -99,7 +99,7 @@ extern "C" fn end_element(ctx: *const c_void, name: *const ffi::xmlChar) {
 extern "C" fn characters(ctx: *const c_void, ch: *const ffi::xmlChar, len: c_int) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(Characters(from_buf_len(ch, len as uint)))
+            Ok(Characters(string::raw::from_buf_len(ch, len as uint)))
         );
     }
 }
@@ -107,7 +107,7 @@ extern "C" fn characters(ctx: *const c_void, ch: *const ffi::xmlChar, len: c_int
 extern "C" fn comment(ctx: *const c_void, value: *const ffi::xmlChar) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(Comment(from_c_str(value as *const c_char)))
+            Ok(Comment(string::raw::from_buf(value as *const u8)))
         );
     }
 }
@@ -115,7 +115,7 @@ extern "C" fn comment(ctx: *const c_void, value: *const ffi::xmlChar) {
 extern "C" fn cdata_block(ctx: *const c_void, value: *const ffi::xmlChar, len: c_int) {
     unsafe {
         sender_from_ptr(ctx).send(
-            Ok(CdataBlock(from_buf_len(value, len as uint)))
+            Ok(CdataBlock(string::raw::from_buf_len(value, len as uint)))
         );
     }
 }
