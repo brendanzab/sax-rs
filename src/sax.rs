@@ -26,7 +26,7 @@ extern crate sync;
 use libc::{c_char, c_int};
 use std::mem;
 use std::comm::{Receiver, channel};
-use std::str;
+use std::string;
 use std::io::{File, IoResult};
 use std::fmt;
 
@@ -86,8 +86,8 @@ impl Attributes {
         while !ptr.is_null() && !(*ptr).is_null() {
             ret.push(
                 Attribute {
-                    name: str::raw::from_c_str(*ptr),
-                    value: str::raw::from_c_str(*ptr.offset(1)),
+                    name: string::raw::from_buf(*ptr as *const u8),
+                    value: string::raw::from_buf(*ptr.offset(1) as *const u8),
                 }
             );
             ptr = ptr.offset(2);
