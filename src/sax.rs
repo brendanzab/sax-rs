@@ -175,7 +175,9 @@ pub fn parse_file(path: &Path) -> IoResult<Receiver<ParseResult>> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::{Attributes, Attribute};
+    use super::{StartDocument, EndDocument, StartElement, EndElement};
+    use super::{parse_str};
 
     fn get_mock_atts() -> Attributes {
         Attributes(Vec::from_slice([
